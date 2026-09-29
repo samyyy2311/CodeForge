@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grading Console - BITS Pilani Digital</title>
+<style>
+:root{
+  --paper:#f3f4fa;
+  --surface:#ffffff;
+  --sunken:#f8f9fe;
+  --rule:#e2e5f2;
+  --rule-soft:#eceff8;
+  --ink:#1c1947;
+  --ink-2:#48456f;
+  --ink-3:#7a779d;
+  --brand-title:#1c1947;
+  --accent:#5b50d6;
+  --accent-hover:#4a3fc5;
+  --accent-soft:#eef0fc;
+  --on-accent:#ffffff;
+  --ok:#16a34a;
+  --err:#dc2626;
+  --err-soft:#fef2f2;
+  --err-rule:#fecaca;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Charter,"Bitstream Charter",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0d0e1a;
+    --surface:#151628;
+    --sunken:#1b1c33;
+    --rule:#292b4a;
+    --rule-soft:#20223a;
+    --ink:#f0f1fa;
+    --ink-2:#a4a7cf;
+    --ink-3:#72759e;
+    --brand-title:#ffffff;
+    --accent:#818cf8;
+    --accent-hover:#9ca3af;
+    --accent-soft:#1e2044;
+    --on-accent:#ffffff;
+    --ok:#34d399;
+    --err:#f87171;
+    --err-soft:#2a181a;
+    --err-rule:#542528;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0d0e1a;
+  --surface:#151628;
+  --sunken:#1b1c33;
+  --rule:#292b4a;
+  --rule-soft:#20223a;
+  --ink:#f0f1fa;
+  --ink-2:#a4a7cf;
+  --ink-3:#72759e;
+  --brand-title:#ffffff;
+  --accent:#818cf8;
+  --accent-hover:#9ca3af;
+  --accent-soft:#1e2044;
+  --on-accent:#ffffff;
+  --ok:#34d399;
+  --err:#f87171;
+  --err-soft:#2a181a;
+  --err-rule:#542528;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --paper:#f3f4fa;
+  --surface:#ffffff;
+  --sunken:#f8f9fe;
+  --rule:#e2e5f2;
+  --rule-soft:#eceff8;
+  --ink:#1c1947;
+  --ink-2:#48456f;
+  --ink-3:#7a779d;
+  --brand-title:#1c1947;
+  --accent:#5b50d6;
+  --accent-hover:#4a3fc5;
+  --accent-soft:#eef0fc;
+  --on-accent:#ffffff;
+  --ok:#16a34a;
+  --err:#dc2626;
+  --err-soft:#fef2f2;
+  --err-rule:#fecaca;
+  color-scheme:light;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:14px/1.5 var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1120px;margin:0 auto;padding:0 20px 64px}
+
+/* masthead */
+.masthead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:24px 0 16px;
+  margin-bottom:20px;
+  border-bottom:1px solid var(--rule);
+}
+.masthead-titles{min-width:0}
+.eyebrow{margin:0 0 2px;font-size:13px;font-weight:700;color:var(--brand-title);letter-spacing:0.02em}
+h1{margin:0;font-family:var(--sans);font-size:24px;font-weight:700;line-height:1.15;color:var(--accent)}
+.theme-btn{
+  flex:none;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  height:32px;
+  padding:0 10px;
+  font:inherit;
+  font-size:12.5px;
+  font-weight:500;
+  color:var(--ink-2);
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.theme-btn:hover{color:var(--ink);border-color:var(--accent)}
+
+/* setup */
+.setup{
+  display:grid;
+  grid-template-columns:1fr 1.25fr 1fr;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:6px;
+}
+.step{padding:14px 16px 16px;border-right:1px solid var(--rule-soft);min-width:0}
+.step:nth-child(3){border-right:0}
+.step-label{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;font-size:13px;font-weight:600}
+.step-n{font-family:var(--serif);font-size:16px;color:var(--accent)}
+
+input:not([type=file]):not([type=checkbox]),select{
+  width:100%;
+  height:36px;
+  padding:0 10px;
+  font:inherit;
+  color:var(--ink);
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:4px;
+}
+select{
+  appearance:none;
+  -webkit-appearance:none;
+  padding-right:28px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8579' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+}
+input::placeholder{color:var(--ink-3)}
+input:not([type=file]):not([type=checkbox]):hover,select:hover{border-color:var(--ink-3)}
+input:not([type=file]):not([type=checkbox]):focus,select:focus{
+  outline:2px solid transparent;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+input:disabled{background:var(--sunken);color:var(--ink-3);cursor:not-allowed}
+
+.file-field{position:relative;display:flex;align-items:center;gap:10px;height:36px;min-width:0}
+.file-input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.file-btn{
+  flex:none;
+  display:inline-flex;
+  align-items:center;
+  height:36px;
+  padding:0 12px;
+  border:1px solid var(--rule);
+  border-radius:4px;
+  background:var(--sunken);
+  font-weight:500;
+  cursor:pointer;
+}
+.file-btn:hover{border-color:var(--ink-3)}
+.file-input:focus-visible + .file-btn{outline:2px solid var(--accent);outline-offset:2px}
+.sample-btn{flex:none;height:36px;background:var(--sunken)}
+.file-name{max-width:180px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;color:var(--ink-3)}
+.file-name[hidden]{display:none}
+.file-name.loaded{color:var(--ink)}
+.clear-btn{flex:none;height:36px;padding:0 10px;font:inherit;font-size:13px;font-weight:500;color:var(--ink-2);background:var(--sunken);border:1px solid var(--rule);border-radius:4px;cursor:pointer}
+.clear-btn:hover{color:var(--err);border-color:var(--err-rule);background:var(--err-soft)}
+.sample-tag{flex:none;padding:2px 7px;font-size:11.5px;font-weight:500;color:var(--ink-2);background:var(--rule-soft);border:1px solid var(--rule);border-radius:3px;white-space:nowrap}
+.sample-tag[hidden]{display:none}
+
+/* course picker */
+.picker{position:relative}
+.picker-btn{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  width:100%;
+  height:36px;
+  padding:0 10px;
+  font-size:14px;
+  font-weight:400;
+  text-align:left;
+}
+.picker-btn[aria-expanded=true]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.picker-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.picker-value.placeholder{color:var(--ink-3)}
+.picker-btn svg{flex:none;color:var(--ink-3);transition:transform .15s ease}
+.picker-btn[aria-expanded=true] svg{transform:rotate(180deg)}
+.picker-list{
+  position:absolute;
+  z-index:20;
+  top:calc(100% + 4px);
+  left:0;
+  right:0;
+  max-height:264px;
+  margin:0;
+  padding:4px;
+  overflow:auto;
+  list-style:none;
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:6px;
+  box-shadow:0 8px 24px rgb(0 0 0 / .08),0 1px 3px rgb(0 0 0 / .06);
+}
+.picker-list:focus{outline:none}
+.picker-list li{
+  position:relative;
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+  padding:7px 10px 7px 28px;
+  border-radius:4px;
+  cursor:pointer;
+}
+.picker-list li.active{background:var(--accent-soft)}
+.picker-list li[aria-selected=true]{font-weight:600}
+.picker-list li[aria-selected=true]::before{
+  content:"";
+  position:absolute;
+  left:11px;
+  top:calc(50% - 6px);
+  width:4px;
+  height:8px;
+  border:solid var(--accent);
+  border-width:0 1.5px 1.5px 0;
+  transform:rotate(45deg);
+}
+.picker-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.picker-meta{flex:none;font-size:12px;font-weight:400;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+.guidance{grid-column:1/-1;padding:10px 16px 12px;border-top:1px solid var(--rule-soft);font-size:13px;color:var(--ink-2)}
+.guidance summary{width:max-content;cursor:pointer}
+.guidance summary:hover{color:var(--ink)}
+.guidance p{max-width:72ch;margin:6px 0 0;line-height:1.55}
+
+/* messages */
+#welcome{margin-top:14px;font-size:13.5px}
+#welcome:empty{display:none}
+.notice{color:var(--ink-2)}
+.error{color:var(--err);font-weight:500}
+.upload-errors{margin-top:12px;padding:12px 16px;background:var(--err-soft);border:1px solid var(--err-rule);border-radius:6px;font-size:13px}
+.upload-errors strong{color:var(--err);font-weight:600}
+.upload-errors ul{margin:6px 0 0;padding-left:18px}
+
+.empty{
+  margin-top:20px;
+  padding:44px 24px;
+  border:1px dashed var(--rule);
+  border-radius:6px;
+  text-align:center;
+  color:var(--ink-2);
+}
+.empty h2{margin:0 0 6px;font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink)}
+.empty p{max-width:50ch;margin:0 auto}
+body.has-course .empty{display:none}
+
+/* workspace */
+.workspace{display:none;margin-top:20px;grid-template-columns:420px minmax(0,1fr);gap:20px;align-items:start}
+body.has-course .workspace{display:grid}
+.col-side{position:sticky;top:16px}
+.col-main{display:flex;flex-direction:column;gap:20px;min-width:0}
+
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+.panel-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 16px;padding:14px 16px 10px}
+.panel-head h2{margin:0;font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.25}
+.panel-meta{margin:0;font-size:12.5px;color:var(--ink-3)}
+
+/* grade bands */
+.bands{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.bands th,.bands td{padding:5px 8px;border-top:1px solid var(--rule-soft);text-align:left;vertical-align:middle}
+.bands thead th{padding-top:0;padding-bottom:6px;border-top:0;font-size:12px;font-weight:500;color:var(--ink-3)}
+.bands tr > :first-child{padding-left:16px}
+.bands tr > :last-child{padding-right:16px}
+.bands tbody th{width:52px;font-family:var(--serif);font-size:16px;font-weight:600}
+.stepper{display:inline-flex;height:30px;background:var(--surface);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+.stepper:hover{border-color:var(--ink-3)}
+.stepper:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.bands .stepper input{width:36px;height:100%;padding:0;text-align:center;font-variant-numeric:tabular-nums;background:transparent;border:0;border-radius:0}
+.bands .stepper input:focus{border:0;box-shadow:none}
+.step-btn{width:24px;height:100%;padding:0;font-size:15px;line-height:1;color:var(--ink-2);background:var(--sunken);border:0;border-radius:0}
+.step-btn:first-child{border-right:1px solid var(--rule-soft)}
+.step-btn:last-child{border-left:1px solid var(--rule-soft)}
+.step-btn:hover:not(:disabled){color:var(--ink);background:var(--rule-soft)}
+.step-btn:disabled{color:var(--rule);background:var(--sunken)}
+.bands td.to,.bands td.fixed{padding-left:17px;color:var(--ink-2)}
+.bands tr.invalid th,.bands tr.invalid td.to{color:var(--err)}
+.bands tr.invalid .stepper{border-color:var(--err)}
+.bands-note{margin:0;padding:8px 16px 0;font-size:12.5px;color:var(--ink-3)}
+.bands tr.grade > *{transition:background-color .6s ease}
+.bands tr.grade.lift > *{background:var(--accent-soft);transition:none}
+.band-count{white-space:nowrap}
+.band-count b{font-weight:600;transition:color .6s ease}
+.band-count b.pulse{color:var(--accent);transition:none}
+.band-count .pct{margin-left:6px;font-size:12.5px;color:var(--ink-3)}
+.band-bar{width:28%}
+.track{display:block;height:6px;border-radius:3px;background:var(--rule-soft)}
+.fill{display:block;height:100%;width:0;border-radius:3px;background:var(--accent);transition:width .3s ease}
+
+.recon{padding:10px 16px 0;font-size:12.5px}
+.recon:empty{display:none}
+.recon.ok{color:var(--ok)}
+.recon.warn{color:var(--err)}
+
+.band-foot{margin-top:12px;padding:12px 16px 14px;border-top:1px solid var(--rule-soft)}
+#rangeError{margin-bottom:10px;font-size:13px;font-weight:500;color:var(--err)}
+#rangeError:empty{display:none}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.export{display:flex;gap:8px;flex:1 0 100%}
+.actions .export button{flex:1;height:38px}
+#downloadHint{margin:10px 0 0;font-size:12.5px;color:var(--ink-3)}
+#thankyou{margin-top:4px;font-size:12.5px;color:var(--ok)}
+#thankyou:empty{display:none}
+
+button{
+  height:32px;
+  padding:0 12px;
+  font:inherit;
+  font-size:13px;
+  font-weight:500;
+  color:var(--ink);
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  cursor:pointer;
+}
+button:hover:not(:disabled){border-color:var(--ink-3)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{color:var(--ink-3);background:var(--sunken);cursor:not-allowed}
+button.primary{height:34px;padding:0 16px;font-weight:600;color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
+button.primary:hover:not(:disabled){background:var(--accent-hover);border-color:var(--accent-hover)}
+button.primary:disabled{color:var(--ink-3);background:var(--sunken);border-color:var(--rule)}
+
+/* distribution */
+.chart{padding:0 16px}
+#hist{display:block;width:100%;height:220px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin:8px 0 0;border-top:1px solid var(--rule-soft)}
+.stat{padding:10px 16px 12px;border-left:1px solid var(--rule-soft)}
+.stat:first-child{border-left:0}
+.stat dt{font-size:12px;color:var(--ink-3)}
+.stat dd{margin:2px 0 0;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* students */
+.search{width:180px}
+.search input{height:32px}
+.students{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.students th,.students td{padding:8px 16px;border-top:1px solid var(--rule-soft);text-align:left}
+.students thead th{position:sticky;top:0;z-index:1;font-size:12px;font-weight:500;color:var(--ink-3);background:var(--sunken);border-top-color:var(--rule);box-shadow:0 1px 0 var(--rule-soft)}
+.students .num{text-align:right}
+.students tbody tr:hover{background:var(--sunken)}
+.students .g{font-weight:600}
+.students .note{font-size:12.5px;color:var(--accent);white-space:nowrap}
+.students tr.near-cutoff td.note::before{
+  content:"";
+  display:inline-block;
+  width:6px;
+  height:6px;
+  margin-right:6px;
+  vertical-align:middle;
+  border-radius:50%;
+  background:var(--accent);
+}
+#previewCount.warn{color:var(--err)}
+.filters{display:flex;flex:1 0 100%;align-items:center;gap:14px;flex-wrap:wrap}
+.check{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.check input{width:15px;height:15px;margin:0;accent-color:var(--accent)}
+.check input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.check:has(input:disabled){color:var(--ink-3);cursor:not-allowed}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body.dragging .file-step{background:var(--accent-soft);outline:2px dashed var(--accent);outline-offset:-6px}
+.students tbody tr:last-child td{padding-bottom:10px}
+.sort-button{height:auto;padding:0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
+.sort-button:hover:not(:disabled){color:var(--ink)}
+th[aria-sort=ascending] .sort-button::after{content:"↑";content:"↑"/"";margin-left:4px}
+th[aria-sort=descending] .sort-button::after{content:"↓";content:"↓"/"";margin-left:4px}
+
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+@media (max-width:920px){
+  .workspace{grid-template-columns:1fr}
+  .col-side{position:static}
+}
+@media (max-width:720px){
+  .page{padding:0 16px 48px}
+  h1{font-size:24px}
+  .setup{grid-template-columns:1fr}
+  .step{border-right:0;border-bottom:1px solid var(--rule-soft)}
+  .step:nth-child(3){border-bottom:0}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(3){border-left:0}
+  .stat:nth-child(n+3){border-top:1px solid var(--rule-soft)}
+  .filters,.search{width:100%}
+  .file-field{flex-wrap:wrap;height:auto;row-gap:6px}
+  .file-name{flex-basis:100%}
+  .step-btn{width:32px}
+  .students th,.students td{padding-left:12px;padding-right:12px}
+}
+@media (max-width:420px){
+  .band-bar{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+<header class="masthead">
+  <div class="masthead-titles">
+    <p class="eyebrow">BITS Pilani Digital</p>
+    <h1>Advanced Grading Console</h1>
+  </div>
+  <button type="button" id="themeToggle" class="theme-btn" aria-label="Toggle color theme">Dark mode</button>
+</header>
+
+<section class="setup" aria-label="Set up grading">
+  <div class="step">
+    <label class="step-label" for="instructor"><span class="step-n">1</span>Instructor name</label>
+    <input id="instructor" placeholder="Enter instructor name" autocomplete="name" required>
+  </div>
+  <div class="step file-step">
+    <label class="step-label" for="file"><span class="step-n">2</span>Marks workbook</label>
+    <div class="file-field">
+      <input type="file" id="file" class="file-input" accept=".xls,.xlsx" aria-describedby="fileName">
+      <label for="file" class="file-btn">Choose file…</label>
+      <button type="button" id="loadSample" class="sample-btn">Use sample</button>
+      <button type="button" id="clearFile" class="clear-btn" hidden>Clear</button>
+      <span id="fileName" class="file-name">.xls or .xlsx</span>
+      <span id="sampleTag" class="sample-tag" hidden>Sample data</span>
+    </div>
+  </div>
+  <div class="step">
+    <span class="step-label" id="courseLabel"><span class="step-n">3</span>Course</span>
+    <div class="picker" id="coursePicker">
+      <button type="button" id="courseButton" class="picker-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="courseList" aria-labelledby="courseLabel courseButton" disabled>
+        <span class="picker-value placeholder">Upload a workbook first</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul id="courseList" class="picker-list" role="listbox" tabindex="-1" aria-labelledby="courseLabel" hidden></ul>
+      <select id="course" class="visually-hidden" tabindex="-1" aria-hidden="true"><option value="">Select a course to begin</option></select>
+    </div>
+  </div>
+
+  <details class="guidance">
+    <summary>Marks file format guidance</summary>
+    <p>The uploaded Excel file should contain exactly three columns: <b>BITS ID</b>, <b>Course</b>, and <b>Total Marks</b>.</p>
+    <p>Enter marks as whole numbers from 0 to 100. Decimal values are not accepted.</p>
+    <p>Students who did not appear for the trimester-end examination and are to be awarded an <b>NC</b> grade should not be included in the file.</p>
+    <p>This console is for students who sat the examination.</p>
+  </details>
+</section>
+
+<div id="welcome" class="notice" role="status" aria-live="polite"></div>
+<div id="uploadErrors" class="upload-errors" role="alert" hidden>
+  <strong>Please correct these workbook rows and upload again:</strong>
+  <ul id="uploadErrorList"></ul>
+</div>
+
+<div class="empty">
+  <h2>No course selected</h2>
+  <p>Enter your name, upload a marks workbook (or use the sample) and choose a course. The grade bands, marks distribution and each student's grade will appear here.</p>
+</div>
+
+<div class="workspace">
+  <div class="col-side">
+    <section class="panel" aria-labelledby="bandsTitle">
+      <div class="panel-head">
+        <h2 id="bandsTitle">Grade bands</h2>
+        <p class="panel-meta" id="bandsSource">Default ranges</p>
+      </div>
+      <table class="bands">
+        <caption class="visually-hidden">Grade ranges and the number of students in each grade</caption>
+        <thead><tr>
+          <th scope="col">Grade</th>
+          <th scope="col">From</th>
+          <th scope="col">To</th>
+          <th scope="col">Students</th>
+          <th scope="col" class="band-bar"><span class="visually-hidden">Share of class</span></th>
+        </tr></thead>
+        <tbody id="grades"></tbody>
+      </table>
+      <p class="bands-note">Set the lowest mark for each grade. Each grade ends one mark below the grade above it.</p>
+      <div id="gradeReconciliation" class="recon" role="status" aria-live="polite"></div>
+      <p id="gradeSummary" class="visually-hidden" aria-live="polite"></p>
+
+      <div class="band-foot">
+        <div id="rangeError" role="alert" aria-live="polite"></div>
+        <div class="actions">
+          <button id="undoRanges" type="button" disabled>Undo range change</button>
+          <button id="resetRanges" type="button" disabled>Reset ranges</button>
+          <div class="export">
+            <button id="download" class="primary" type="button" aria-describedby="downloadHint rangeError" disabled>Download CSV</button>
+            <button id="downloadXlsx" type="button" aria-describedby="downloadHint rangeError" disabled>Download Excel</button>
+          </div>
+        </div>
+        <p id="downloadHint">Upload a marks workbook, enter your name, and choose a course to continue.</p>
+        <div id="thankyou" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="col-main">
+    <section class="panel" aria-labelledby="distTitle">
+      <div class="panel-head">
+        <h2 id="distTitle">Marks distribution</h2>
+        <p class="panel-meta">5-mark bins · dashed lines mark grade cut-offs</p>
+      </div>
+      <div class="chart">
+        <canvas id="hist" role="img" aria-describedby="histDescription"></canvas>
+        <p id="histDescription" class="visually-hidden" aria-live="polite">Upload a workbook and choose a course to view its marks distribution.</p>
+      </div>
+      <dl class="stats">
+        <div class="stat"><dt>Min</dt><dd id="min">N/A</dd></div>
+        <div class="stat"><dt>Max</dt><dd id="max">N/A</dd></div>
+        <div class="stat"><dt>Average</dt><dd id="avg">N/A</dd></div>
+        <div class="stat"><dt>Median</dt><dd id="med">N/A</dd></div>
+      </dl>
+    </section>
+
+    <section class="panel" aria-labelledby="previewTitle">
+      <div class="panel-head">
+        <div>
+          <h2 id="previewTitle">Student grade preview</h2>
+          <p id="previewCount" class="panel-meta">Choose a course to review student grades.</p>
+        </div>
+        <div class="filters">
+          <label class="check"><input id="nearOnly" type="checkbox" disabled>Near a cut-off only</label>
+          <div class="search">
+            <label for="previewSearch" class="visually-hidden">Find a BITS ID</label>
+            <input id="previewSearch" type="search" placeholder="Find a BITS ID" disabled>
+          </div>
+        </div>
+      </div>
+      <table class="students">
+        <caption class="visually-hidden">Student IDs, marks, calculated grades and cut-off notes for the selected course</caption>
+        <thead><tr>
+          <th id="idHeader" scope="col" aria-sort="ascending"><button class="sort-button" id="sortId" type="button">BITS ID</button></th>
+          <th id="marksHeader" scope="col" aria-sort="none" class="num"><button class="sort-button" id="sortMarks" type="button">Marks</button></th>
+          <th id="gradeHeader" scope="col" aria-sort="none"><button class="sort-button" id="sortGrade" type="button">Grade</button></th>
+          <th scope="col">Note</th>
+        </tr></thead>
+        <tbody id="previewBody"></tbody>
+      </table>
+    </section>
+  </div>
+</div>
+
+</div>
+
+<script>
+const GRADES=["A","A-","B","B-","C","C-","D","E"];
+const DEFAULTS={
+  "A":[80,100],"A-":[70,79],"B":[60,69],"B-":[50,59],
+  "C":[40,49],"C-":[30,39],"D":[20,29],"E":[0,19]
+};
+const CUTOFF_GRADES=GRADES.slice(0,-1);
+const DEFAULT_CUTOFFS=Object.fromEntries(CUTOFF_GRADES.map(g=>[g,DEFAULTS[g][0]]));
+const STORAGE_KEY="codeforge.gradeCutoffs.v1";
+const SHEETJS_SOURCES=["xlsx.full.min.js","https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"];
+const NEAR_CUTOFF=2;
+const UNDO_LIMIT=50;
+const SAMPLE_SOURCES=["sample-marks.xlsx","https://raw.githubusercontent.com/samyyy2311/CodeForge/main/sample-marks.xlsx"];
+const HEADER_ALIASES={
+  "bits id":"BITS ID","student's bits id":"BITS ID","students bits id":"BITS ID",
+  "course":"Course",
+  "total marks":"Total Marks","total marks (out of 100)":"Total Marks"
+};
+
+let data=[];
+let previousSummary={};
+let chartFrame=0;
+let uploadToken=0;
+let previousCutoffs=null;
+let undoStack=[];
+let sheetjsLoading=null;
+let previewSortKey="id";
+let previewSortDirection=1;
+
+const instructor=document.getElementById("instructor");
+const file=document.getElementById("file");
+const fileName=document.getElementById("fileName");
+const loadSample=document.getElementById("loadSample");
+const clearFile=document.getElementById("clearFile");
+const sampleTag=document.getElementById("sampleTag");
+const themeToggle=document.getElementById("themeToggle");
+
+function updateThemeToggleLabel(){
+  if(!themeToggle) return;
+  const current=document.documentElement.getAttribute("data-theme");
+  const isDark=current==="dark"||(!current&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+  themeToggle.textContent=isDark?"Light mode":"Dark mode";
+}
+function initTheme(){
+  const saved=localStorage.getItem("codeforge-theme");
+  if(saved){
+    document.documentElement.setAttribute("data-theme",saved);
+  }
+  updateThemeToggleLabel();
+}
+initTheme();
+if(themeToggle){
+  themeToggle.onclick=()=>{
+    const current=document.documentElement.getAttribute("data-theme");
+    const isDark=current==="dark"||(!current&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const next=isDark?"light":"dark";
+    document.documentElement.setAttribute("data-theme",next);
+    localStorage.setItem("codeforge-theme",next);
+    updateThemeToggleLabel();
+    redrawChart();
+  };
+}
+const course=document.getElementById("course");
+const welcome=document.getElementById("welcome");
+const grades=document.getElementById("grades");
+const rangeError=document.getElementById("rangeError");
+const download=document.getElementById("download");
+const downloadXlsx=document.getElementById("downloadXlsx");
+const nearOnly=document.getElementById("nearOnly");
+const downloadHint=document.getElementById("downloadHint");
+const resetRanges=document.getElementById("resetRanges");
+const undoRanges=document.getElementById("undoRanges");
+const hist=document.getElementById("hist");
+const histDescription=document.getElementById("histDescription");
+const min=document.getElementById("min");
+const max=document.getElementById("max");
+const avg=document.getElementById("avg");
+const med=document.getElementById("med");
+const gradeSummary=document.getElementById("gradeSummary");
+const thankyou=document.getElementById("thankyou");
+const previewSearch=document.getElementById("previewSearch");
+const previewCount=document.getElementById("previewCount");
+const previewBody=document.getElementById("previewBody");
+const uploadErrors=document.getElementById("uploadErrors");
+const uploadErrorList=document.getElementById("uploadErrorList");
+const gradeReconciliation=document.getElementById("gradeReconciliation");
+const bandsSource=document.getElementById("bandsSource");
+const sortId=document.getElementById("sortId");
+const sortMarks=document.getElementById("sortMarks");
+const sortGrade=document.getElementById("sortGrade");
+const sortHeaders={
+  id:document.getElementById("idHeader"),
+  marks:document.getElementById("marksHeader"),
+  grade:document.getElementById("gradeHeader")
+};
+
+function loadScript(src){
+  return new Promise((resolve,reject)=>{
+    const script=document.createElement("script");
+    script.src=src;
+    script.onload=resolve;
+    script.onerror=()=>{script.remove();reject(new Error(src));};
+    document.head.appendChild(script);
+  });
+}
+
+function loadSheetJS(){
+  if(window.XLSX) return Promise.resolve();
+  sheetjsLoading??=SHEETJS_SOURCES
+    .reduce((attempt,src)=>attempt.catch(()=>loadScript(src)),Promise.reject())
+    .catch(err=>{sheetjsLoading=null;throw err;});
+  return sheetjsLoading;
+}
+
+function showFileError(message){
+  welcome.textContent=message;
+  welcome.className="error";
+  downloadHint.textContent=message;
+  uploadErrors.hidden=true;
+  uploadErrorList.replaceChildren();
+}
+
+function plural(count,word){
+  return `${count} ${count===1?word:word+"s"}`;
+}
+
+function showRowErrors(errors){
+  welcome.textContent=`Found ${plural(errors.length,"workbook row issue")}.`;
+  welcome.className="error";
+  downloadHint.textContent="Correct the listed rows and upload the workbook again.";
+  uploadErrorList.replaceChildren();
+  errors.forEach(message=>{
+    const item=document.createElement("li");
+    item.textContent=message;
+    uploadErrorList.appendChild(item);
+  });
+  uploadErrors.hidden=false;
+}
+
+function setFileName(name,isSample=false){
+  fileName.textContent=name||".xls or .xlsx";
+  fileName.classList.toggle("loaded",!!name);
+  if(fileName) fileName.hidden=isSample;
+  if(sampleTag) sampleTag.hidden=!isSample;
+  if(clearFile) clearFile.hidden=!name;
+}
+
+function resetWorkbook(){
+  data=[];
+  uploadToken++;
+  file.value="";
+  setFileName("",false);
+  course.innerHTML='<option value="">Select a course to begin</option>';
+  course.value="";
+  course.disabled=false;
+  syncCoursePicker();
+  grades.replaceChildren();
+  resetRanges.disabled=true;
+  undoRanges.disabled=true;
+  previousCutoffs=null;
+  undoStack=[];
+  download.disabled=true;
+  downloadXlsx.disabled=true;
+  thankyou.textContent="";
+  welcome.textContent="";
+  welcome.className="notice";
+  uploadErrors.hidden=true;
+  uploadErrorList.replaceChildren();
+  rangeError.textContent="";
+  previewSortKey="id";
+  previewSortDirection=1;
+  Object.values(sortHeaders).forEach(header=>header.removeAttribute("aria-sort"));
+  clearAnalytics();
+  updateDownloadState();
+}
+if(clearFile) clearFile.onclick=resetWorkbook;
+
+function clearAnalytics(){
+  if(chartFrame) cancelAnimationFrame(chartFrame);
+  chartFrame=0;
+  document.body.classList.remove("has-course");
+  ["min","max","avg","med"].forEach(id=>{
+    document.getElementById(id).textContent="N/A";
+  });
+  hist.getContext("2d").clearRect(0,0,hist.width,hist.height);
+  histDescription.textContent="Upload a workbook and choose a course to view its marks distribution.";
+  gradeSummary.textContent="";
+  gradeReconciliation.textContent="";
+  gradeReconciliation.className="recon";
+  clearPreview("Choose a course to review student grades.");
+}
+
+function clearPreview(message){
+  previewSearch.value="";
+  previewSearch.disabled=true;
+  nearOnly.checked=false;
+  nearOnly.disabled=true;
+  previewCount.classList.remove("warn");
+  previewCount.textContent=message;
+  previewBody.replaceChildren();
+}
+
+function gradeForMark(mark,ranges){
+  return GRADES.find(g=>mark>=ranges[g][0]&&mark<=ranges[g][1])||"Unassigned";
+}
+
+function cutoffNote(mark,grade,ranges){
+  const index=GRADES.indexOf(grade);
+  if(index<1) return "";
+  const above=GRADES[index-1];
+  const gap=ranges[above][0]-mark;
+  return gap<=NEAR_CUTOFF?`${gap} ${gap===1?"mark":"marks"} below ${above}`:"";
+}
+
+function gradedRows(){
+  const ranges=readRanges();
+  return data.filter(d=>d.Course===course.value).map(d=>{
+    const grade=gradeForMark(d["Total Marks"],ranges);
+    return {...d,Grade:grade,Note:cutoffNote(d["Total Marks"],grade,ranges)};
+  });
+}
+
+function renderPreview(){
+  const courseRows=data.filter(row=>row.Course===course.value);
+  const query=previewSearch.value.trim().toLocaleLowerCase();
+  const valid=!!document.getElementById("Amin")&&!validateRanges();
+  const graded=valid?gradedRows():courseRows.map(row=>({...row,Grade:"—",Note:""}));
+  const nearCount=graded.filter(row=>row.Note).length;
+  const rows=graded
+    .filter(row=>row["BITS ID"].toLocaleLowerCase().includes(query))
+    .filter(row=>!nearOnly.checked||row.Note);
+  rows.sort((a,b)=>{
+    let comparison;
+    if(previewSortKey==="marks") comparison=a["Total Marks"]-b["Total Marks"];
+    else if(previewSortKey==="grade") comparison=GRADES.indexOf(a.Grade)-GRADES.indexOf(b.Grade);
+    else comparison=a["BITS ID"].localeCompare(b["BITS ID"],undefined,{numeric:true});
+    return comparison*previewSortDirection||a["BITS ID"].localeCompare(b["BITS ID"],undefined,{numeric:true});
+  });
+  previewSearch.disabled=!course.value;
+  nearOnly.disabled=!course.value||!valid;
+  previewBody.replaceChildren();
+  rows.forEach(row=>{
+    const tr=document.createElement("tr");
+    if(row.Note) tr.className="near-cutoff";
+    [row["BITS ID"],row["Total Marks"],row.Grade,row.Note].forEach((value,i)=>{
+      const td=document.createElement("td");
+      td.textContent=String(value);
+      td.className=["","num","g","note"][i];
+      tr.appendChild(td);
+    });
+    previewBody.appendChild(tr);
+  });
+  const filtered=query||(nearOnly.checked&&valid);
+  let summary;
+  if(!valid) summary=`${courseRows.length} ${courseRows.length===1?"student":"students"} in ${course.value}. Fix the grade ranges to see their grades.`;
+  else if(rows.length===0) summary=query?"No students match this BITS ID.":`No students are within ${NEAR_CUTOFF} marks of the next grade.`;
+  else if(filtered) summary=`Showing ${rows.length} of ${courseRows.length} students.`;
+  else summary=`${courseRows.length} ${courseRows.length===1?"student":"students"} in ${course.value}. ${nearCount} within ${NEAR_CUTOFF} marks of the next grade.`;
+  previewCount.textContent=summary;
+  previewCount.classList.toggle("warn",!valid);
+  Object.entries(sortHeaders).forEach(([key,header])=>{
+    header.setAttribute("aria-sort",key===previewSortKey
+      ? previewSortDirection===1?"ascending":"descending"
+      : "none");
+  });
+}
+
+function changePreviewSort(key){
+  if(previewSortKey===key) previewSortDirection*=-1;
+  else{previewSortKey=key;previewSortDirection=1;}
+  renderPreview();
+}
+
+function csvCell(value){
+  let text=String(value??"");
+  if(/^[\s]*[=+@-]/.test(text)) text="'"+text;
+  return `"${text.replaceAll('"','""')}"`;
+}
+
+function updateDownloadState(){
+  const hasStudents=data.some(d=>d.Course===course.value);
+  const invalid=validateRanges();
+  rangeError.textContent=invalid;
+  download.disabled=!!invalid||!course.value||!hasStudents||!instructor.value.trim();
+  downloadXlsx.disabled=download.disabled;
+  if(invalid) downloadHint.textContent="Fix the grade ranges before downloading.";
+  else if(!instructor.value.trim()) downloadHint.textContent="Enter the instructor name to continue.";
+  else if(!data.length) downloadHint.textContent="Upload a marks workbook to continue.";
+  else if(!course.value) downloadHint.textContent="Choose a course to continue.";
+  else if(!hasStudents) downloadHint.textContent="There are no student records for this course.";
+  else downloadHint.textContent="Ready to download the grades for this course.";
+}
+
+function canonicalHeader(header){
+  const key=String(header).trim().replace(/\s+/g," ").replace(/[\u2018\u2019]/g,"'").toLocaleLowerCase();
+  return HEADER_ALIASES[key]||header;
+}
+
+function parseWorkbook(buffer){
+  const wb=XLSX.read(buffer,{type:"array"});
+  if(!wb.SheetNames.length) throw new Error("The workbook has no worksheets.");
+  const sheet=wb.Sheets[wb.SheetNames[0]];
+  const matrix=XLSX.utils.sheet_to_json(sheet,{header:1,defval:""});
+  const required=["BITS ID","Course","Total Marks"];
+  if(!matrix.length||matrix.length<=1) throw new Error("The first worksheet contains no student rows.");
+
+  let maxCol=0;
+  for(let r=0;r<matrix.length;r++){
+    const row=matrix[r];
+    if(!row) continue;
+    for(let c=row.length-1;c>=0;c--){
+      if(row[c]!==""&&row[c]!==null&&row[c]!==undefined&&String(row[c]).trim()!==""){
+        if(c+1>maxCol) maxCol=c+1;
+        break;
+      }
+    }
+  }
+  if(maxCol!==3){
+    throw new Error("The worksheet must contain exactly these columns: BITS ID, Course, Total Marks.");
+  }
+
+  const rawHeaders=(matrix[0]||[]).slice(0,3).map(h=>String(h??"").trim());
+  const columns=rawHeaders.map(canonicalHeader);
+
+  if(columns.length!==3||new Set(columns).size!==3||required.some(k=>!columns.includes(k))){
+    throw new Error("The worksheet must contain exactly these columns: BITS ID, Course, Total Marks.");
+  }
+  const sheetRows=XLSX.utils.sheet_to_json(sheet,{defval:""});
+  if(!sheetRows.length) throw new Error("The first worksheet contains no student rows.");
+  const headers=Object.keys(sheetRows[0]);
+  const rows=sheetRows.map(row=>Object.fromEntries(headers.map((h,i)=>[columns[i],row[h]])));
+  const seen=new Set();
+  const courseNames=new Map();
+  const cleaned=[];
+  const rowErrors=[];
+  rows.forEach((d,i)=>{
+    const id=String(d["BITS ID"]).trim();
+    const typed=String(d.Course).trim().replace(/\s+/g," ");
+    const raw=d["Total Marks"];
+    const rawText=typeof raw==="string"?raw.trim():raw;
+    const courseKey=typed.toLocaleLowerCase();
+    if(typed&&!courseNames.has(courseKey)) courseNames.set(courseKey,typed);
+    const name=courseNames.get(courseKey)||"";
+    const mark=Number(rawText), key=`${courseKey}\u0000${id.toLocaleLowerCase()}`;
+    const validType=typeof raw==="number"||typeof raw==="string";
+    if(!id||!name||!validType||rawText===""||!Number.isFinite(mark)||!Number.isInteger(mark)||mark<0||mark>100){
+      rowErrors.push(`Row ${i+2}: enter a BITS ID, course, and whole-number mark from 0 to 100.`);
+      return;
+    }
+    if(seen.has(key)){
+      rowErrors.push(`Row ${i+2}: BITS ID ${id} appears more than once in ${name}.`);
+      return;
+    }
+    seen.add(key);
+    cleaned.push({"BITS ID":id,Course:name,"Total Marks":mark});
+  });
+  if(rowErrors.length){
+    throw Object.assign(new Error("The workbook has rows to correct."),{rowErrors});
+  }
+  return cleaned;
+}
+
+async function loadWorkbook(name,readBuffer,readError,isSample=false){
+  try{
+    await loadSheetJS();
+  }catch{
+    showFileError("The spreadsheet library did not load. Check your internet connection and reload the page.");
+    return;
+  }
+  const thisUpload=++uploadToken;
+  data=[];
+  setFileName(name,isSample);
+  course.innerHTML='<option value="">Select a course to begin</option>';
+  grades.replaceChildren();
+  resetRanges.disabled=true;
+  undoRanges.disabled=true;
+  previousCutoffs=null;
+  undoStack=[];
+  download.disabled=true;
+  downloadXlsx.disabled=true;
+  thankyou.textContent="";
+  uploadErrors.hidden=true;
+  uploadErrorList.replaceChildren();
+  downloadHint.textContent="Reading the marks workbook...";
+  clearAnalytics();
+  welcome.className="notice"; welcome.textContent="Reading marks file…";
+  try{
+    let buffer;
+    try{
+      buffer=await readBuffer();
+    }catch{
+      throw new Error(readError);
+    }
+    if(thisUpload!==uploadToken) return;
+    data=parseWorkbook(buffer);
+    [...new Set(data.map(d=>d.Course))]
+      .sort((a,b)=>a.localeCompare(b))
+      .forEach(c=>course.add(new Option(c,c)));
+    welcome.className="notice";
+    welcome.textContent=`Loaded ${plural(data.length,"student record")} across ${plural(new Set(data.map(d=>d.Course)).size,"course")}.`;
+    updateDownloadState();
+  }catch(err){
+    if(thisUpload!==uploadToken) return;
+    data=[];
+    setFileName("",false);
+    if(err.rowErrors) showRowErrors(err.rowErrors);
+    else showFileError(err.message||"Unable to read this workbook.");
+  }
+}
+
+file.onchange=()=>{
+  const selectedFile=file.files[0];
+  file.value="";
+  if(!selectedFile) return;
+  loadWorkbook(selectedFile.name,()=>selectedFile.arrayBuffer(),"The selected file could not be read.",false);
+};
+
+loadSample.onclick=()=>{
+  loadWorkbook("sample-marks.xlsx",async()=>{
+    for(const src of SAMPLE_SOURCES){
+      try{
+        const response=await fetch(src);
+        if(response.ok) return await response.arrayBuffer();
+      }catch{
+        // try the next source
+      }
+    }
+    throw new Error("sample unavailable");
+  },"The sample workbook could not be downloaded. Check your internet connection and try again.",true);
+};
+
+const hasFiles=e=>[...(e.dataTransfer?.types||[])].includes("Files");
+let dragDepth=0;
+document.addEventListener("dragenter",e=>{
+  if(!hasFiles(e)) return;
+  dragDepth++;
+  document.body.classList.add("dragging");
+});
+document.addEventListener("dragleave",e=>{
+  if(!hasFiles(e)||--dragDepth>0) return;
+  dragDepth=0;
+  document.body.classList.remove("dragging");
+});
+document.addEventListener("dragover",e=>{
+  if(hasFiles(e)) e.preventDefault();
+});
+document.addEventListener("drop",e=>{
+  if(!hasFiles(e)) return;
+  e.preventDefault();
+  dragDepth=0;
+  document.body.classList.remove("dragging");
+  const dropped=e.dataTransfer.files[0];
+  if(!dropped) return;
+  if(!/\.xlsx?$/i.test(dropped.name)){
+    showFileError("Only .xls and .xlsx files can be uploaded.");
+    return;
+  }
+  loadWorkbook(dropped.name,()=>dropped.arrayBuffer(),"The dropped file could not be read.",false);
+});
+
+loadSheetJS().catch(()=>{});
+
+previewSearch.oninput=renderPreview;
+nearOnly.onchange=renderPreview;
+sortId.onclick=()=>changePreviewSort("id");
+sortMarks.onclick=()=>changePreviewSort("marks");
+sortGrade.onclick=()=>changePreviewSort("grade");
+
+instructor.oninput=()=>{
+  updateDownloadState();
+  if(course.value){
+    welcome.className="notice";
+    welcome.textContent=instructor.value.trim()
+      ? `Hello, ${instructor.value.trim()}. Review the grade ranges and class summary before exporting.`
+      : "Enter the instructor name to enable grade downloads.";
+  }
+};
+
+course.onchange=()=>{
+  if(!course.value){
+    grades.replaceChildren();
+    resetRanges.disabled=true;
+    undoRanges.disabled=true;
+    undoStack=[];
+    previousCutoffs=null;
+    download.disabled=true;
+    downloadXlsx.disabled=true;
+    clearAnalytics();
+    updateDownloadState();
+    return;
+  }
+  if(!instructor.value.trim()){
+    course.value="";
+    grades.replaceChildren();
+    resetRanges.disabled=true;
+    undoRanges.disabled=true;
+    undoStack=[];
+    previousCutoffs=null;
+    download.disabled=true;
+    downloadXlsx.disabled=true;
+    clearAnalytics();
+    welcome.className="error";
+    welcome.textContent="Enter the instructor name before selecting a course.";
+    updateDownloadState();
+    instructor.focus();
+    return;
+  }
+  welcome.className="notice";
+  welcome.textContent=`Hello, ${instructor.value.trim()}. Review the grade ranges and class summary before exporting.`;
+  buildGradeUI();
+  updateAll();
+};
+
+const coursePicker=document.getElementById("coursePicker");
+const courseButton=document.getElementById("courseButton");
+const courseButtonValue=courseButton.querySelector(".picker-value");
+const courseList=document.getElementById("courseList");
+let activeCourse=0;
+
+function courseOptions(){
+  return [...course.options].filter(option=>option.value);
+}
+
+function syncCoursePicker(){
+  const options=courseOptions();
+  courseButton.disabled=!options.length;
+  courseButtonValue.textContent=course.value||(options.length?"Select a course":"Upload a workbook first");
+  courseButtonValue.classList.toggle("placeholder",!course.value);
+  if(!options.length) closeCourseList(false);
+  else if(!courseList.hidden) renderCourseList();
+}
+
+function renderCourseList(){
+  courseList.replaceChildren();
+  courseOptions().forEach((option,i)=>{
+    const item=document.createElement("li");
+    item.id=`courseOption${i}`;
+    item.setAttribute("role","option");
+    item.setAttribute("aria-selected",String(option.value===course.value));
+    const name=document.createElement("span");
+    name.className="picker-name";
+    name.textContent=option.value;
+    const meta=document.createElement("span");
+    meta.className="picker-meta";
+    const count=data.filter(d=>d.Course===option.value).length;
+    meta.textContent=plural(count,"student")+(isDefaultCutoffs(cutoffsForCourse(option.value))?"":" \u00b7 custom ranges");
+    item.append(name,meta);
+    item.onmousemove=()=>{if(activeCourse!==i) setActiveCourse(i);};
+    item.onclick=()=>chooseCourse(i);
+    courseList.appendChild(item);
+  });
+  setActiveCourse(activeCourse);
+}
+
+function setActiveCourse(i){
+  const items=[...courseList.children];
+  if(!items.length) return;
+  activeCourse=Math.max(0,Math.min(items.length-1,i));
+  items.forEach((item,j)=>item.classList.toggle("active",j===activeCourse));
+  courseList.setAttribute("aria-activedescendant",items[activeCourse].id);
+  items[activeCourse].scrollIntoView({block:"nearest"});
+}
+
+function openCourseList(){
+  if(courseButton.disabled||!courseList.hidden) return;
+  activeCourse=Math.max(0,courseOptions().findIndex(option=>option.value===course.value));
+  courseList.hidden=false;
+  courseButton.setAttribute("aria-expanded","true");
+  renderCourseList();
+  courseList.focus();
+}
+
+function closeCourseList(refocus=true){
+  if(courseList.hidden) return;
+  courseList.hidden=true;
+  courseButton.setAttribute("aria-expanded","false");
+  courseList.removeAttribute("aria-activedescendant");
+  if(refocus) courseButton.focus();
+}
+
+function chooseCourse(i){
+  const option=courseOptions()[i];
+  closeCourseList();
+  if(!option||option.value===course.value) return;
+  course.value=option.value;
+  course.dispatchEvent(new Event("change"));
+}
+
+courseButton.onclick=()=>courseList.hidden?openCourseList():closeCourseList();
+courseButton.onkeydown=e=>{
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){
+    e.preventDefault();
+    openCourseList();
+  }
+};
+courseList.onkeydown=e=>{
+  const count=courseList.children.length;
+  if(e.key==="ArrowDown") setActiveCourse(activeCourse+1);
+  else if(e.key==="ArrowUp") setActiveCourse(activeCourse-1);
+  else if(e.key==="Home") setActiveCourse(0);
+  else if(e.key==="End") setActiveCourse(count-1);
+  else if(e.key==="Enter"||e.key===" ") chooseCourse(activeCourse);
+  else if(e.key==="Escape") closeCourseList();
+  else if(e.key==="Tab"){closeCourseList(false);return;}
+  else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    const names=courseOptions().map(option=>option.value.toLocaleLowerCase());
+    const letter=e.key.toLocaleLowerCase();
+    const next=[...names.keys()].map(k=>(activeCourse+1+k)%count).find(k=>names[k].startsWith(letter));
+    if(next!==undefined) setActiveCourse(next);
+  }
+  else return;
+  e.preventDefault();
+};
+courseList.addEventListener("focusout",e=>{
+  if(!coursePicker.contains(e.relatedTarget)) closeCourseList(false);
+});
+course.addEventListener("change",syncCoursePicker);
+new MutationObserver(syncCoursePicker).observe(course,{childList:true});
+
+function loadSavedCutoffs(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+    return saved&&typeof saved==="object"&&!Array.isArray(saved)?saved:{};
+  }catch{
+    return {};
+  }
+}
+
+function cutoffsForCourse(courseName){
+  const saved=loadSavedCutoffs()["course:"+courseName];
+  const cutoffs={...DEFAULT_CUTOFFS};
+  if(saved&&typeof saved==="object"){
+    CUTOFF_GRADES.forEach(g=>{
+      if(Number.isInteger(saved[g])&&saved[g]>=1&&saved[g]<=100) cutoffs[g]=saved[g];
+    });
+  }
+  return cutoffs;
+}
+
+function isDefaultCutoffs(cutoffs){
+  return CUTOFF_GRADES.every(g=>cutoffs[g]===DEFAULT_CUTOFFS[g]);
+}
+
+function saveCutoffs(courseName,cutoffs){
+  try{
+    const saved=loadSavedCutoffs();
+    if(isDefaultCutoffs(cutoffs)) delete saved["course:"+courseName];
+    else saved["course:"+courseName]=cutoffs;
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));
+  }catch{
+    // storage can be blocked (e.g. private mode), saving is optional
+  }
+}
+
+function buildGradeUI(){
+  grades.replaceChildren();
+  resetRanges.disabled=false;
+  undoRanges.disabled=true;
+  undoStack=[];
+  previousCutoffs=null;
+  previousSummary={};
+  const initial=cutoffsForCourse(course.value);
+  const rows=[];
+  GRADES.forEach((g,idx)=>{
+    const row=document.createElement("tr");
+    row.className="grade";
+    rows.push(row);
+
+    const label=document.createElement("th");
+    label.scope="row";
+    label.textContent=g;
+
+    const fromCell=document.createElement("td");
+    if(g==="E"){
+      fromCell.className="fixed";
+      fromCell.textContent="0";
+    }else{
+      const input=document.createElement("input");
+      input.id=g+"min";
+      input.type="text";
+      input.inputMode="numeric";
+      input.autocomplete="off";
+      input.spellcheck=false;
+      input.maxLength=3;
+      input.value=String(initial[g]);
+      input.setAttribute("role","spinbutton");
+      input.setAttribute("aria-valuemin","1");
+      input.setAttribute("aria-valuemax","100");
+      input.setAttribute("aria-label",`Lowest mark for ${g}`);
+      input.title=`Lowest mark for ${g} (Up/Down arrows for \u00B11, PageUp/Down for \u00B15)`;
+      input.setAttribute("aria-keyshortcuts","ArrowUp ArrowDown PageUp PageDown");
+      const commit=value=>{
+        const current=previousCutoffs?previousCutoffs[g]:initial[g];
+        let next=Number(String(value).trim());
+        if(!Number.isInteger(next)) next=current;
+        next=Math.min(100,Math.max(1,next));
+        input.value=String(next);
+        if(next===current) return;
+        saveUndoPoint();
+        [rows[idx],rows[idx+1]].forEach(changed=>{
+          changed.classList.add("lift");
+          setTimeout(()=>changed.classList.remove("lift"),30);
+        });
+        updateAll();
+      };
+      const stepButton=(text,label,delta)=>{
+        const button=document.createElement("button");
+        button.type="button";
+        button.className="step-btn";
+        button.tabIndex=-1;
+        button.textContent=text;
+        button.setAttribute("aria-label",label);
+        button.title=label;
+        button.onclick=()=>commit(Number(input.value)+delta);
+        return button;
+      };
+      input.onchange=()=>commit(input.value);
+      input.onkeydown=e=>{
+        const delta={ArrowUp:1,ArrowDown:-1,PageUp:5,PageDown:-5}[e.key];
+        if(delta){e.preventDefault();commit(Number(input.value)+delta);}
+        else if(e.key==="Enter"){e.preventDefault();commit(input.value);}
+      };
+      const stepper=document.createElement("div");
+      stepper.className="stepper";
+      stepper.append(stepButton("\u2212",`Lower the ${g} cut-off`,-1),input,stepButton("+",`Raise the ${g} cut-off`,1));
+      fromCell.appendChild(stepper);
+    }
+
+    const toCell=document.createElement("td");
+    toCell.className="to";
+    toCell.id=g+"max";
+
+    const countCell=document.createElement("td");
+    countCell.className="band-count";
+    countCell.id=g+"count";
+
+    const barCell=document.createElement("td");
+    barCell.className="band-bar";
+    const track=document.createElement("span");
+    track.className="track";
+    const fill=document.createElement("span");
+    fill.className="fill";
+    fill.id=g+"bar";
+    track.appendChild(fill);
+    barCell.appendChild(track);
+
+    row.append(label,fromCell,toCell,countCell,barCell);
+    grades.appendChild(row);
+  });
+  previousCutoffs=readCutoffs();
+}
+
+function setCutoffs(cutoffs){
+  CUTOFF_GRADES.forEach(g=>{
+    document.getElementById(g+"min").value=String(cutoffs[g]);
+  });
+}
+
+resetRanges.onclick=()=>{
+  if(!document.getElementById("Amin")) return;
+  if(!confirm("Reset all grade ranges to the default values?")) return;
+  saveUndoPoint();
+  setCutoffs(DEFAULT_CUTOFFS);
+  updateAll();
+};
+
+undoRanges.onclick=()=>{
+  if(!undoStack.length) return;
+  setCutoffs(undoStack.pop());
+  undoRanges.disabled=!undoStack.length;
+  updateAll();
+};
+
+function readCutoffs(){
+  return Object.fromEntries(CUTOFF_GRADES.map(g=>[g,Number(document.getElementById(g+"min").value)]));
+}
+
+function readRanges(){
+  const cutoffs=readCutoffs();
+  const ranges={};
+  let top=100;
+  GRADES.forEach(g=>{
+    const lowest=g==="E"?0:cutoffs[g];
+    ranges[g]=[lowest,top];
+    top=lowest-1;
+  });
+  return ranges;
+}
+
+function saveUndoPoint(){
+  if(!previousCutoffs) return;
+  undoStack.push({...previousCutoffs});
+  if(undoStack.length>UNDO_LIMIT) undoStack.shift();
+  undoRanges.disabled=false;
+}
+
+function validateRanges(){
+  if(!document.getElementById("Amin")) return "";
+  const ranges=readRanges();
+  for(let i=1;i<GRADES.length;i++){
+    const g=GRADES[i], above=GRADES[i-1];
+    if(ranges[g][0]>ranges[g][1]) return `${g} must start below ${above}, which starts at ${ranges[above][0]}.`;
+  }
+  return "";
+}
+
+function renderBandEnds(){
+  const ranges=readRanges();
+  CUTOFF_GRADES.forEach(g=>{
+    const input=document.getElementById(g+"min");
+    const [down,up]=input.parentElement.querySelectorAll(".step-btn");
+    input.setAttribute("aria-valuenow",input.value);
+    down.disabled=Number(input.value)<=1;
+    up.disabled=Number(input.value)>=100;
+  });
+  GRADES.forEach(g=>{
+    const empty=ranges[g][0]>ranges[g][1];
+    document.getElementById(g+"max").textContent=empty?"—":ranges[g][1];
+    document.getElementById(g+"max").closest("tr").classList.toggle("invalid",empty);
+  });
+}
+
+function updateAll(){
+  document.body.classList.add("has-course");
+  thankyou.textContent="";
+  const cutoffs=readCutoffs();
+  saveCutoffs(course.value,cutoffs);
+  bandsSource.textContent=isDefaultCutoffs(cutoffs)?"Default ranges":"Custom ranges, saved in this browser";
+  renderBandEnds();
+  updateDownloadState();
+  drawHistogram();
+  computeStats();
+  computeGradeSummary();
+  renderPreview();
+  previousCutoffs=cutoffs;
+}
+
+function drawHistogram(animate=true){
+  if(chartFrame) cancelAnimationFrame(chartFrame);
+  chartFrame=0;
+
+  const dpr=window.devicePixelRatio||1;
+  const W=hist.clientWidth||360;
+  const H=hist.clientHeight||220;
+  hist.width=Math.round(W*dpr);
+  hist.height=Math.round(H*dpr);
+  const ctx=hist.getContext("2d");
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  const marks=data.filter(d=>d.Course===course.value).map(d=>d["Total Marks"]);
+  if(!marks.length){
+    histDescription.textContent="There are no marks to show for this course.";
+    return;
+  }
+
+  const BIN=5, COUNT=100/BIN;
+  const bins=Array(COUNT).fill(0);
+  marks.forEach(m=>bins[Math.min(COUNT-1,Math.floor(m/BIN))]++);
+  const top=Math.max(...bins,1);
+  histDescription.textContent="Marks distribution. "+bins
+    .map((count,i)=>`${i*BIN} to ${i===COUNT-1?100:i*BIN+BIN-1}: ${count} ${count===1?"student":"students"}`)
+    .join(". ");
+
+  const css=getComputedStyle(document.documentElement);
+  const color=name=>css.getPropertyValue(name).trim();
+  const accent=color("--accent"), ink2=color("--ink-2"), ink3=color("--ink-3"), rule=color("--rule");
+  const font=css.getPropertyValue("--sans").trim()||"sans-serif";
+
+  const pad={l:2,r:2,t:34,b:22};
+  const cw=W-pad.l-pad.r, ch=H-pad.t-pad.b, base=pad.t+ch;
+  const xAt=mark=>pad.l+mark/100*cw;
+  const bw=cw/COUNT;
+  const ranges=document.getElementById("Amin")&&!validateRanges()?readRanges():null;
+
+  function frame(p){
+    ctx.clearRect(0,0,W,H);
+
+    bins.forEach((v,i)=>{
+      const h=v/top*ch*p;
+      const x=pad.l+i*bw+1.5, w=Math.max(1,bw-3), y=base-h;
+      if(h>0){
+        const r=Math.min(2,h,w/2);
+        const band=ranges?GRADES.findIndex(g=>i*BIN>=ranges[g][0]&&i*BIN<=ranges[g][1]):0;
+        ctx.globalAlpha=band%2?.5:1;
+        ctx.fillStyle=accent;
+        ctx.beginPath();
+        ctx.moveTo(x,base);
+        ctx.lineTo(x,y+r);
+        ctx.arcTo(x,y,x+r,y,r);
+        ctx.lineTo(x+w-r,y);
+        ctx.arcTo(x+w,y,x+w,y+r,r);
+        ctx.lineTo(x+w,base);
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha=1;
+      }
+      if(v&&p===1){
+        ctx.fillStyle=ink2;
+        ctx.font=`500 10px ${font}`;
+        ctx.textAlign="center";
+        ctx.fillText(String(v),x+w/2,y-4);
+      }
+    });
+
+    if(ranges){
+      ctx.strokeStyle=ink3;
+      ctx.lineWidth=1;
+      ctx.setLineDash([3,3]);
+      GRADES.forEach(g=>{
+        const cut=ranges[g][0];
+        if(cut<=0) return;
+        const x=Math.round(xAt(cut))+.5;
+        ctx.beginPath();
+        ctx.moveTo(x,16);
+        ctx.lineTo(x,base);
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+      ctx.fillStyle=ink2;
+      ctx.font=`600 11px ${font}`;
+      ctx.textAlign="center";
+      GRADES.forEach(g=>{
+        const [lo,hi]=ranges[g];
+        const x0=xAt(lo), x1=xAt(Math.min(100,hi+1));
+        if(x1-x0>=16) ctx.fillText(g,(x0+x1)/2,12);
+      });
+    }
+
+    ctx.strokeStyle=rule;
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(pad.l,base+.5);
+    ctx.lineTo(W-pad.r,base+.5);
+    ctx.stroke();
+
+    ctx.fillStyle=ink3;
+    ctx.font=`10px ${font}`;
+    [0,20,40,60,80,100].forEach(t=>{
+      ctx.textAlign=t===0?"left":t===100?"right":"center";
+      ctx.fillText(String(t),xAt(t),H-6);
+    });
+  }
+
+  if(!animate||window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    frame(1);
+    return;
+  }
+  let start=null;
+  const step=ts=>{
+    if(start===null) start=ts;
+    const p=Math.min((ts-start)/350,1);
+    frame(p<1?1-Math.pow(1-p,3):1);
+    if(p<1) chartFrame=requestAnimationFrame(step);
+    else chartFrame=0;
+  };
+  chartFrame=requestAnimationFrame(step);
+}
+
+let resizeFrame=0;
+function redrawChart(){
+  if(!document.body.classList.contains("has-course")) return;
+  cancelAnimationFrame(resizeFrame);
+  resizeFrame=requestAnimationFrame(()=>drawHistogram(false));
+}
+window.addEventListener("resize",redrawChart);
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",redrawChart);
+
+function computeStats(){
+  const m=data.filter(d=>d.Course===course.value)
+    .map(d=>d["Total Marks"]).sort((a,b)=>a-b);
+  if(!m.length){["min","max","avg","med"].forEach(id=>document.getElementById(id).textContent="N/A");return;}
+  min.textContent=m[0];
+  max.textContent=m[m.length-1];
+  avg.textContent=(m.reduce((a,b)=>a+b,0)/m.length).toFixed(2);
+  med.textContent=m.length%2?m[Math.floor(m.length/2)]
+    :(m[m.length/2-1]+m[m.length/2])/2;
+}
+
+function computeGradeSummary(){
+  const students=data.filter(d=>d.Course===course.value);
+  const counts=Object.fromEntries(GRADES.map(g=>[g,0]));
+  let assigned=0;
+  let unassigned=0;
+  const ranges=readRanges();
+  students.forEach(student=>{
+    const matches=GRADES.filter(g=>student["Total Marks"]>=ranges[g][0]&&student["Total Marks"]<=ranges[g][1]);
+    if(matches.length===1){counts[matches[0]]++;assigned++;}
+    else if(matches.length===0) unassigned++;
+  });
+  const largest=Math.max(1,...GRADES.map(g=>counts[g]));
+  const percentages={};
+  GRADES.forEach(g=>{
+    const percentage=students.length?(counts[g]/students.length*100).toFixed(1):"0.0";
+    percentages[g]=percentage;
+    const cell=document.getElementById(g+"count");
+    const fill=document.getElementById(g+"bar");
+    if(cell){
+      const count=document.createElement("b");
+      count.textContent=counts[g];
+      const share=document.createElement("span");
+      share.className="pct";
+      share.textContent=`(${percentage}%)`;
+      cell.replaceChildren(count,document.createTextNode(" "),share);
+      if(previousSummary[g]!==undefined&&previousSummary[g]!==counts[g]){
+        count.classList.add("pulse");
+        setTimeout(()=>count.classList.remove("pulse"),30);
+      }
+    }
+    if(fill) fill.style.width=`${counts[g]/largest*100}%`;
+    previousSummary[g]=counts[g];
+  });
+  gradeSummary.textContent=GRADES.map(g=>`${g}: ${counts[g]} (${percentages[g]}%)`).join(", ");
+  const invalid=validateRanges();
+  if(invalid){
+    gradeReconciliation.className="recon warn";
+    gradeReconciliation.textContent="Fix the grade ranges to check the totals.";
+  }else if(assigned===students.length){
+    gradeReconciliation.className="recon ok";
+    gradeReconciliation.textContent=`All ${students.length} students have one grade. The grade counts add up to ${assigned}.`;
+  }else{
+    gradeReconciliation.className="recon warn";
+    gradeReconciliation.textContent=`${unassigned} of ${students.length} students do not have a grade. Check the ranges before exporting.`;
+  }
+}
+
+function exportName(extension){
+  return `${course.value.trim().replace(/[^a-z0-9_-]+/gi,"_")}_grades.${extension}`;
+}
+
+download.onclick=()=>{
+  let csv=`Instructor,${csvCell(instructor.value.trim())}\r\nCourse,${csvCell(course.value)}\r\n\r\nBITS ID,Total Marks,Grade\r\n`;
+  gradedRows().forEach(row=>{
+    csv+=`${csvCell(row["BITS ID"])},${csvCell(row["Total Marks"])},${csvCell(row.Grade)}\r\n`;
+  });
+
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  a.download=exportName("csv");
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+
+  thankyou.textContent=`Grades for ${course.value} were exported.`;
+};
+
+downloadXlsx.onclick=()=>{
+  const rows=gradedRows();
+  const ranges=readRanges();
+  const gradeSheet=XLSX.utils.aoa_to_sheet([
+    ["Instructor",instructor.value.trim()],
+    ["Course",course.value],
+    [],
+    ["BITS ID","Total Marks","Grade","Near a cut-off"],
+    ...rows.map(row=>[row["BITS ID"],row["Total Marks"],row.Grade,row.Note])
+  ]);
+  gradeSheet["!cols"]=[{wch:14},{wch:12},{wch:8},{wch:18}];
+
+  const summarySheet=XLSX.utils.aoa_to_sheet([
+    ["Grade","From","To","Students","Share"],
+    ...GRADES.map(g=>{
+      const count=rows.filter(row=>row.Grade===g).length;
+      return [g,ranges[g][0],ranges[g][1],count,rows.length?count/rows.length:0];
+    }),
+    ["Total","","",rows.length,rows.length?1:0]
+  ]);
+  for(let r=1;r<=GRADES.length+1;r++) summarySheet[XLSX.utils.encode_cell({r,c:4})].z="0.0%";
+
+  const workbook=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook,gradeSheet,"Grades");
+  XLSX.utils.book_append_sheet(workbook,summarySheet,"Summary");
+  XLSX.writeFile(workbook,exportName("xlsx"));
+
+  thankyou.textContent=`Grades for ${course.value} were exported.`;
+};
+</script>
+</body>
+</html>
