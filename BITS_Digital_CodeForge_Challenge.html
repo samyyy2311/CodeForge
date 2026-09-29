@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Grading Console - BITS Pilani Digital</title>
 <style>
+/* Design tokens & themes */
 :root{
   --paper:#f3f4fa;
   --surface:#ffffff;
@@ -39,7 +40,7 @@
     --ink-3:#72759e;
     --brand-title:#ffffff;
     --accent:#818cf8;
-    --accent-hover:#9ca3af;
+    --accent-hover:#6366f1;
     --accent-soft:#1e2044;
     --on-accent:#ffffff;
     --ok:#34d399;
@@ -60,7 +61,7 @@
   --ink-3:#72759e;
   --brand-title:#ffffff;
   --accent:#818cf8;
-  --accent-hover:#9ca3af;
+  --accent-hover:#6366f1;
   --accent-soft:#1e2044;
   --on-accent:#ffffff;
   --ok:#34d399;
@@ -91,6 +92,7 @@
 }
 
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
 body{
   margin:0;
   background:var(--paper);
@@ -98,9 +100,10 @@ body{
   font:14px/1.5 var(--sans);
   -webkit-font-smoothing:antialiased;
 }
+
+/* Layout */
 .page{max-width:1120px;margin:0 auto;padding:0 20px 64px}
 
-/* masthead */
 .masthead{
   display:flex;
   align-items:center;
@@ -112,26 +115,7 @@ body{
 .masthead-titles{min-width:0}
 .eyebrow{margin:0 0 2px;font-size:13px;font-weight:700;color:var(--brand-title);letter-spacing:0.02em}
 h1{margin:0;font-family:var(--sans);font-size:24px;font-weight:700;line-height:1.15;color:var(--accent)}
-.theme-btn{
-  flex:none;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  height:32px;
-  padding:0 10px;
-  font:inherit;
-  font-size:12.5px;
-  font-weight:500;
-  color:var(--ink-2);
-  background:var(--surface);
-  border:1px solid var(--rule);
-  border-radius:4px;
-  cursor:pointer;
-  transition:all .15s ease;
-}
-.theme-btn:hover{color:var(--ink);border-color:var(--accent)}
 
-/* setup */
 .setup{
   display:grid;
   grid-template-columns:1fr 1.25fr 1fr;
@@ -144,15 +128,141 @@ h1{margin:0;font-family:var(--sans);font-size:24px;font-weight:700;line-height:1
 .step-label{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;font-size:13px;font-weight:600}
 .step-n{font-family:var(--serif);font-size:16px;color:var(--accent)}
 
-input:not([type=file]):not([type=checkbox]),select{
-  width:100%;
-  height:36px;
-  padding:0 10px;
+.guidance{grid-column:1/-1;padding:10px 16px 12px;border-top:1px solid var(--rule-soft);font-size:13px;color:var(--ink-2)}
+.guidance summary{width:max-content;cursor:pointer;padding:2px 6px;margin-left:-6px;border-radius:4px;transition:color .15s ease, background-color .15s ease}
+.guidance summary:hover{color:var(--ink);background:var(--sunken)}
+.guidance summary:focus-visible{outline:2px solid transparent;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.guidance p{max-width:72ch;margin:6px 0 0;line-height:1.55}
+
+#welcome{margin-top:14px;font-size:13.5px}
+#welcome:empty{display:none}
+.notice{color:var(--ink-2)}
+.error{color:var(--err);font-weight:500}
+.upload-errors{margin-top:12px;padding:12px 16px;background:var(--err-soft);border:1px solid var(--err-rule);border-radius:6px;font-size:13px}
+.upload-errors strong{color:var(--err);font-weight:600}
+.upload-errors ul{margin:6px 0 0;padding-left:18px}
+
+.empty{
+  margin-top:20px;
+  padding:44px 24px;
+  border:1px dashed var(--rule);
+  border-radius:6px;
+  text-align:center;
+  color:var(--ink-2);
+}
+.empty h2{margin:0 0 6px;font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink)}
+.empty p{max-width:50ch;margin:0 auto}
+body.has-course .empty{display:none}
+
+.workspace{display:none;margin-top:20px;grid-template-columns:420px minmax(0,1fr);gap:20px;align-items:start}
+body.has-course .workspace{display:grid}
+.col-side{position:sticky;top:16px}
+.col-main{display:flex;flex-direction:column;gap:20px;min-width:0}
+
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+.panel-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 16px;padding:14px 16px 10px}
+.panel-head h2{margin:0;font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.25}
+.panel-meta{margin:0;font-size:12.5px;color:var(--ink-3)}
+
+/* Buttons & controls */
+button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  height:32px;
+  padding:0 12px;
   font:inherit;
+  font-size:13px;
+  font-weight:500;
+  line-height:1.2;
   color:var(--ink);
   background:var(--surface);
   border:1px solid var(--rule);
-  border-radius:4px;
+  border-radius:5px;
+  box-shadow:0 1px 2px rgb(0 0 0 / .02);
+  cursor:pointer;
+  transition:background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease, transform .1s ease;
+}
+button:hover:not(:disabled){border-color:var(--ink-3);background:var(--sunken);color:var(--ink)}
+button:active:not(:disabled){background:var(--rule-soft);transform:translateY(1px)}
+button:focus-visible{outline:2px solid transparent;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+button:disabled{color:var(--ink-3);background:var(--sunken);border-color:var(--rule);cursor:not-allowed;opacity:0.65;box-shadow:none;transform:none}
+
+button.primary{
+  height:34px;
+  padding:0 16px;
+  font-weight:600;
+  color:var(--on-accent);
+  background:var(--accent);
+  border-color:var(--accent);
+  box-shadow:0 1px 2px rgb(0 0 0 / .04);
+}
+button.primary:hover:not(:disabled){
+  background:var(--accent-hover);
+  border-color:var(--accent-hover);
+  color:var(--on-accent);
+}
+button.primary:active:not(:disabled){transform:translateY(1px)}
+button.primary:disabled{
+  color:var(--ink-3);
+  background:var(--sunken);
+  border-color:var(--rule);
+  opacity:0.65;
+  box-shadow:none;
+  transform:none;
+}
+
+.theme-btn{
+  flex:none;
+  height:32px;
+  padding:0 12px;
+  font-size:12.5px;
+  color:var(--ink-2);
+}
+.theme-btn::before{
+  content:"";
+  display:inline-block;
+  width:14px;
+  height:14px;
+  flex:none;
+  background-color:currentColor;
+  -webkit-mask-size:contain;
+  mask-size:contain;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/%3E%3C/svg%3E");
+}
+:root[data-theme="dark"] .theme-btn::before{
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .theme-btn::before{
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
+  }
+}
+:root[data-theme="light"] .theme-btn::before{
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/%3E%3C/svg%3E");
+}
+
+input:not([type=file]):not([type=checkbox]),select{
+  width:100%;
+  height:36px;
+  padding:0 12px;
+  font:inherit;
+  font-size:14px;
+  color:var(--ink);
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:5px;
+  box-shadow:0 1px 2px rgb(0 0 0 / .02);
+  transition:border-color .15s ease, box-shadow .15s ease;
 }
 select{
   appearance:none;
@@ -161,6 +271,7 @@ select{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8579' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat:no-repeat;
   background-position:right 10px center;
+  cursor:pointer;
 }
 input::placeholder{color:var(--ink-3)}
 input:not([type=file]):not([type=checkbox]):hover,select:hover{border-color:var(--ink-3)}
@@ -169,34 +280,54 @@ input:not([type=file]):not([type=checkbox]):focus,select:focus{
   border-color:var(--accent);
   box-shadow:0 0 0 3px var(--accent-soft);
 }
-input:disabled{background:var(--sunken);color:var(--ink-3);cursor:not-allowed}
+input:disabled{background:var(--sunken);color:var(--ink-3);border-color:var(--rule);cursor:not-allowed;opacity:0.8}
 
-.file-field{position:relative;display:flex;align-items:center;gap:10px;height:36px;min-width:0}
+.file-field{position:relative;display:flex;align-items:center;gap:8px;height:36px;min-width:0}
 .file-input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
 .file-btn{
   flex:none;
   display:inline-flex;
   align-items:center;
+  justify-content:center;
   height:36px;
   padding:0 12px;
   border:1px solid var(--rule);
-  border-radius:4px;
-  background:var(--sunken);
+  border-radius:5px;
+  background:var(--surface);
+  color:var(--ink);
+  font-size:13px;
   font-weight:500;
   cursor:pointer;
+  box-shadow:0 1px 2px rgb(0 0 0 / .02);
+  transition:background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease, transform .1s ease;
 }
-.file-btn:hover{border-color:var(--ink-3)}
-.file-input:focus-visible + .file-btn{outline:2px solid var(--accent);outline-offset:2px}
-.sample-btn{flex:none;height:36px;background:var(--sunken)}
+.file-btn:hover{border-color:var(--ink-3);background:var(--sunken)}
+.file-btn:active{background:var(--rule-soft);transform:translateY(1px)}
+.file-input:focus-visible + .file-btn{outline:2px solid transparent;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+.sample-btn{
+  flex:none;
+  height:36px;
+  color:var(--ink-2);
+}
+.sample-btn:hover:not(:disabled){color:var(--ink)}
+
+.clear-btn{
+  flex:none;
+  height:36px;
+  padding:0 10px;
+  color:var(--ink-2);
+}
+.clear-btn:hover{color:var(--err);border-color:var(--err-rule);background:var(--err-soft)}
+.clear-btn:focus-visible{outline:2px solid transparent;border-color:var(--err);box-shadow:0 0 0 3px var(--err-soft)}
+
 .file-name{max-width:180px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;color:var(--ink-3)}
 .file-name[hidden]{display:none}
 .file-name.loaded{color:var(--ink)}
-.clear-btn{flex:none;height:36px;padding:0 10px;font:inherit;font-size:13px;font-weight:500;color:var(--ink-2);background:var(--sunken);border:1px solid var(--rule);border-radius:4px;cursor:pointer}
-.clear-btn:hover{color:var(--err);border-color:var(--err-rule);background:var(--err-soft)}
-.sample-tag{flex:none;padding:2px 7px;font-size:11.5px;font-weight:500;color:var(--ink-2);background:var(--rule-soft);border:1px solid var(--rule);border-radius:3px;white-space:nowrap}
+.sample-tag{flex:none;padding:2px 7px;font-size:11.5px;font-weight:500;color:var(--ink-2);background:var(--rule-soft);border:1px solid var(--rule);border-radius:4px;white-space:nowrap}
 .sample-tag[hidden]{display:none}
+body.dragging .file-step{background:var(--accent-soft);outline:2px dashed var(--accent);outline-offset:-6px}
 
-/* course picker */
 .picker{position:relative}
 .picker-btn{
   display:flex;
@@ -205,12 +336,23 @@ input:disabled{background:var(--sunken);color:var(--ink-3);cursor:not-allowed}
   gap:8px;
   width:100%;
   height:36px;
-  padding:0 10px;
+  padding:0 12px;
   font-size:14px;
   font-weight:400;
   text-align:left;
+  color:var(--ink);
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:5px;
+  box-shadow:0 1px 2px rgb(0 0 0 / .02);
+  cursor:pointer;
+  transition:border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
+.picker-btn:hover:not(:disabled){border-color:var(--ink-3)}
+.picker-btn:active:not(:disabled){background:var(--sunken)}
+.picker-btn:focus-visible{outline:2px solid transparent;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .picker-btn[aria-expanded=true]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.picker-btn:disabled{background:var(--sunken);color:var(--ink-3);border-color:var(--rule);cursor:not-allowed;opacity:0.8}
 .picker-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .picker-value.placeholder{color:var(--ink-3)}
 .picker-btn svg{flex:none;color:var(--ink-3);transition:transform .15s ease}
@@ -241,6 +383,7 @@ input:disabled{background:var(--sunken);color:var(--ink-3);cursor:not-allowed}
   padding:7px 10px 7px 28px;
   border-radius:4px;
   cursor:pointer;
+  transition:background-color .1s ease;
 }
 .picker-list li.active{background:var(--accent-soft)}
 .picker-list li[aria-selected=true]{font-weight:600}
@@ -258,60 +401,108 @@ input:disabled{background:var(--sunken);color:var(--ink-3);cursor:not-allowed}
 .picker-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .picker-meta{flex:none;font-size:12px;font-weight:400;color:var(--ink-3);font-variant-numeric:tabular-nums}
 
-.guidance{grid-column:1/-1;padding:10px 16px 12px;border-top:1px solid var(--rule-soft);font-size:13px;color:var(--ink-2)}
-.guidance summary{width:max-content;cursor:pointer}
-.guidance summary:hover{color:var(--ink)}
-.guidance p{max-width:72ch;margin:6px 0 0;line-height:1.55}
-
-/* messages */
-#welcome{margin-top:14px;font-size:13.5px}
-#welcome:empty{display:none}
-.notice{color:var(--ink-2)}
-.error{color:var(--err);font-weight:500}
-.upload-errors{margin-top:12px;padding:12px 16px;background:var(--err-soft);border:1px solid var(--err-rule);border-radius:6px;font-size:13px}
-.upload-errors strong{color:var(--err);font-weight:600}
-.upload-errors ul{margin:6px 0 0;padding-left:18px}
-
-.empty{
-  margin-top:20px;
-  padding:44px 24px;
-  border:1px dashed var(--rule);
-  border-radius:6px;
-  text-align:center;
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.actions #undoRanges,.actions #resetRanges{
+  height:32px;
+  padding:0 12px;
+  font-size:12.5px;
   color:var(--ink-2);
 }
-.empty h2{margin:0 0 6px;font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink)}
-.empty p{max-width:50ch;margin:0 auto}
-body.has-course .empty{display:none}
+.export{display:flex;gap:8px;flex:1 0 100%}
+.actions .export button{
+  flex:1;
+  height:38px;
+  padding:0 16px;
+  font-size:13.5px;
+  font-weight:600;
+  border-radius:5px;
+}
+.actions .export #downloadXlsx{
+  background:var(--surface);
+  color:var(--ink);
+  border:1px solid var(--rule);
+}
+.actions .export #downloadXlsx:hover:not(:disabled){
+  border-color:var(--accent);
+  color:var(--accent);
+  background:var(--accent-soft);
+}
+.actions .export #downloadXlsx:active:not(:disabled){
+  transform:translateY(1px);
+}
+.actions .export #downloadXlsx:disabled{
+  background:var(--sunken);
+  color:var(--ink-3);
+  border-color:var(--rule);
+  opacity:0.65;
+}
+#downloadHint{margin:10px 0 0;font-size:12.5px;color:var(--ink-3)}
+#thankyou{margin-top:4px;font-size:12.5px;color:var(--ok)}
+#thankyou:empty{display:none}
 
-/* workspace */
-.workspace{display:none;margin-top:20px;grid-template-columns:420px minmax(0,1fr);gap:20px;align-items:start}
-body.has-course .workspace{display:grid}
-.col-side{position:sticky;top:16px}
-.col-main{display:flex;flex-direction:column;gap:20px;min-width:0}
+.check{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:13px;
+  color:var(--ink-2);
+  cursor:pointer;
+  white-space:nowrap;
+  user-select:none;
+  transition:color .15s ease;
+}
+.check:hover{color:var(--ink)}
+.check input{
+  width:16px;
+  height:16px;
+  margin:0;
+  accent-color:var(--accent);
+  cursor:pointer;
+  border-radius:3px;
+}
+.check input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.check:has(input:disabled){color:var(--ink-3);cursor:not-allowed}
+summary:focus-visible{outline:2px solid transparent;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 
-.panel{background:var(--surface);border:1px solid var(--rule);border-radius:6px}
-.panel-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 16px;padding:14px 16px 10px}
-.panel-head h2{margin:0;font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.25}
-.panel-meta{margin:0;font-size:12.5px;color:var(--ink-3)}
-
-/* grade bands */
+/* Grade bands & steppers */
 .bands{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .bands th,.bands td{padding:5px 8px;border-top:1px solid var(--rule-soft);text-align:left;vertical-align:middle}
 .bands thead th{padding-top:0;padding-bottom:6px;border-top:0;font-size:12px;font-weight:500;color:var(--ink-3)}
 .bands tr > :first-child{padding-left:16px}
 .bands tr > :last-child{padding-right:16px}
 .bands tbody th{width:52px;font-family:var(--serif);font-size:16px;font-weight:600}
-.stepper{display:inline-flex;height:30px;background:var(--surface);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+
+.stepper{display:inline-flex;height:30px;background:var(--surface);border:1px solid var(--rule);border-radius:5px;overflow:hidden;box-shadow:0 1px 2px rgb(0 0 0 / .02);transition:border-color .15s ease, box-shadow .15s ease}
 .stepper:hover{border-color:var(--ink-3)}
 .stepper:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.bands .stepper input{width:36px;height:100%;padding:0;text-align:center;font-variant-numeric:tabular-nums;background:transparent;border:0;border-radius:0}
-.bands .stepper input:focus{border:0;box-shadow:none}
-.step-btn{width:24px;height:100%;padding:0;font-size:15px;line-height:1;color:var(--ink-2);background:var(--sunken);border:0;border-radius:0}
+.bands .stepper input{width:36px;height:100%;padding:0;text-align:center;font:inherit;font-size:13.5px;font-weight:500;font-variant-numeric:tabular-nums;background:transparent;border:0;border-radius:0;color:var(--ink)}
+.bands .stepper input:focus{border:0;box-shadow:none;outline:none}
+
+.step-btn{
+  width:24px;
+  height:100%;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font:inherit;
+  font-size:15px;
+  font-weight:600;
+  line-height:1;
+  color:var(--ink-2);
+  background:var(--sunken);
+  border:0;
+  border-radius:0;
+  cursor:pointer;
+  transition:background-color .15s ease, color .15s ease;
+  user-select:none;
+}
 .step-btn:first-child{border-right:1px solid var(--rule-soft)}
 .step-btn:last-child{border-left:1px solid var(--rule-soft)}
 .step-btn:hover:not(:disabled){color:var(--ink);background:var(--rule-soft)}
-.step-btn:disabled{color:var(--rule);background:var(--sunken)}
+.step-btn:active:not(:disabled){background:var(--rule)}
+.step-btn:disabled{color:var(--rule);background:var(--sunken);cursor:not-allowed}
+
 .bands td.to,.bands td.fixed{padding-left:17px;color:var(--ink-2)}
 .bands tr.invalid th,.bands tr.invalid td.to{color:var(--err)}
 .bands tr.invalid .stepper{border-color:var(--err)}
@@ -334,49 +525,48 @@ body.has-course .workspace{display:grid}
 .band-foot{margin-top:12px;padding:12px 16px 14px;border-top:1px solid var(--rule-soft)}
 #rangeError{margin-bottom:10px;font-size:13px;font-weight:500;color:var(--err)}
 #rangeError:empty{display:none}
-.actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.export{display:flex;gap:8px;flex:1 0 100%}
-.actions .export button{flex:1;height:38px}
-#downloadHint{margin:10px 0 0;font-size:12.5px;color:var(--ink-3)}
-#thankyou{margin-top:4px;font-size:12.5px;color:var(--ok)}
-#thankyou:empty{display:none}
 
-button{
+/* Student table & filters */
+.search{width:180px}
+.search input{
   height:32px;
-  padding:0 12px;
+  padding:0 10px;
+  border-radius:5px;
+}
+.filters{display:flex;flex:1 0 100%;align-items:center;gap:12px;flex-wrap:wrap}
+.grade-filter{display:inline-flex;align-items:center;gap:3px;flex-wrap:wrap}
+.grade-chip{
+  height:26px;
+  padding:0 8px;
   font:inherit;
-  font-size:13px;
+  font-size:12px;
   font-weight:500;
-  color:var(--ink);
+  line-height:1;
+  color:var(--ink-2);
   background:var(--surface);
   border:1px solid var(--rule);
   border-radius:4px;
   cursor:pointer;
+  box-shadow:0 1px 2px rgb(0 0 0 / .02);
+  transition:background-color .15s ease, border-color .15s ease, color .15s ease;
 }
-button:hover:not(:disabled){border-color:var(--ink-3)}
-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-button:disabled{color:var(--ink-3);background:var(--sunken);cursor:not-allowed}
-button.primary{height:34px;padding:0 16px;font-weight:600;color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
-button.primary:hover:not(:disabled){background:var(--accent-hover);border-color:var(--accent-hover)}
-button.primary:disabled{color:var(--ink-3);background:var(--sunken);border-color:var(--rule)}
+.grade-chip:hover:not(:disabled){border-color:var(--ink-3);color:var(--ink);background:var(--sunken)}
+.grade-chip:active:not(:disabled){background:var(--rule-soft)}
+.grade-chip.active{
+  color:var(--on-accent);
+  background:var(--accent);
+  border-color:var(--accent);
+  font-weight:600;
+}
+.grade-chip:focus-visible{outline:2px solid transparent;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.grade-chip:disabled{color:var(--ink-3);background:var(--sunken);border-color:var(--rule);cursor:not-allowed;opacity:0.6}
 
-/* distribution */
-.chart{padding:0 16px}
-#hist{display:block;width:100%;height:220px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);margin:8px 0 0;border-top:1px solid var(--rule-soft)}
-.stat{padding:10px 16px 12px;border-left:1px solid var(--rule-soft)}
-.stat:first-child{border-left:0}
-.stat dt{font-size:12px;color:var(--ink-3)}
-.stat dd{margin:2px 0 0;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
-
-/* students */
-.search{width:180px}
-.search input{height:32px}
 .students{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .students th,.students td{padding:8px 16px;border-top:1px solid var(--rule-soft);text-align:left}
 .students thead th{position:sticky;top:0;z-index:1;font-size:12px;font-weight:500;color:var(--ink-3);background:var(--sunken);border-top-color:var(--rule);box-shadow:0 1px 0 var(--rule-soft)}
 .students .num{text-align:right}
 .students tbody tr:hover{background:var(--sunken)}
+.students tbody tr:last-child td{padding-bottom:10px}
 .students .g{font-weight:600}
 .students .note{font-size:12.5px;color:var(--accent);white-space:nowrap}
 .students tr.near-cutoff td.note::before{
@@ -390,19 +580,80 @@ button.primary:disabled{color:var(--ink-3);background:var(--sunken);border-color
   background:var(--accent);
 }
 #previewCount.warn{color:var(--err)}
-.filters{display:flex;flex:1 0 100%;align-items:center;gap:14px;flex-wrap:wrap}
-.check{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2);cursor:pointer;white-space:nowrap}
-.check input{width:15px;height:15px;margin:0;accent-color:var(--accent)}
-.check input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.check:has(input:disabled){color:var(--ink-3);cursor:not-allowed}
-summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-body.dragging .file-step{background:var(--accent-soft);outline:2px dashed var(--accent);outline-offset:-6px}
-.students tbody tr:last-child td{padding-bottom:10px}
-.sort-button{height:auto;padding:0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
-.sort-button:hover:not(:disabled){color:var(--ink)}
+
+.sort-button{
+  height:auto;
+  padding:2px 6px;
+  margin:-2px -6px;
+  border:0;
+  border-radius:4px;
+  background:none;
+  font:inherit;
+  font-size:12px;
+  font-weight:500;
+  color:inherit;
+  cursor:pointer;
+  transition:color .15s ease, background-color .15s ease;
+}
+.sort-button:hover:not(:disabled){color:var(--ink);background:var(--rule-soft)}
+.sort-button:active:not(:disabled){background:var(--rule)}
+.sort-button:focus-visible{outline:2px solid transparent;box-shadow:0 0 0 2px var(--accent)}
 th[aria-sort=ascending] .sort-button::after{content:"↑";content:"↑"/"";margin-left:4px}
 th[aria-sort=descending] .sort-button::after{content:"↓";content:"↓"/"";margin-left:4px}
 
+/* Histogram */
+.chart{position:relative;padding:0 16px}
+#hist{display:block;width:100%;height:220px;cursor:crosshair}
+#hist:focus-visible{outline:2px solid transparent;border-radius:4px;box-shadow:0 0 0 2px var(--accent)}
+.chart-tooltip{
+  position:absolute;
+  top:8px;
+  right:24px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 10px;
+  font-size:12px;
+  font-weight:500;
+  color:var(--ink);
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  box-shadow:0 2px 6px rgb(0 0 0 / .08);
+  pointer-events:none;
+  z-index:2;
+}
+.chart-tooltip[hidden]{display:none !important}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin:8px 0 0;border-top:1px solid var(--rule-soft)}
+.stat{padding:10px 16px 12px;border-left:1px solid var(--rule-soft)}
+.stat:first-child{border-left:0}
+.stat dt{font-size:12px;color:var(--ink-3)}
+.stat dd{margin:2px 0 0;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* Moderation simulator */
+.sim-panel{margin:12px 16px 0;padding:10px 12px;background:var(--sunken);border:1px solid var(--rule);border-radius:5px}
+.sim-bar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sim-title{font-size:12px;font-weight:600;color:var(--ink)}
+.sim-sub{font-size:11px;color:var(--ink-3)}
+.sim-toggle-btn{height:28px;padding:0 10px;font-size:11.5px;font-weight:500}
+.sim-toggle-btn.active{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.sim-body{margin-top:10px;padding-top:10px;border-top:1px solid var(--rule)}
+.sim-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sim-field{display:flex;align-items:center;gap:6px}
+.sim-label{font-size:11.5px;color:var(--ink-2);font-weight:500}
+.sim-select{width:auto;min-width:85px;height:28px;padding:0 22px 0 8px;font-size:11.5px}
+.sim-stepper{height:28px}
+.sim-delta-display{display:inline-flex;align-items:center;justify-content:center;width:34px;height:100%;font-size:12px;font-weight:600;color:var(--ink);user-select:none}
+.sim-feedback{margin:8px 0;padding:6px 10px;border-radius:4px;font-size:11.5px;line-height:1.4;background:var(--surface);border:1px solid var(--rule);color:var(--ink)}
+.sim-feedback strong{color:var(--accent)}
+.sim-actions{display:flex;gap:6px;margin-top:8px}
+.sim-action-btn{height:28px;padding:0 10px;font-size:11.5px;flex:1}
+.sim-badge{display:inline-block;padding:1px 5px;margin-left:4px;font-size:9.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:3px;vertical-align:middle;text-transform:uppercase;letter-spacing:0.03em}
+.sim-tag-band{display:inline-block;padding:1px 4px;margin-left:4px;font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:3px}
+tr.sim-promoted{background:var(--accent-soft) !important}
+#bandsSource.sim-active{color:var(--accent);font-weight:600}
+
+/* Responsive & accessibility */
 .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 @media (max-width:920px){
@@ -514,6 +765,45 @@ th[aria-sort=descending] .sort-button::after{content:"↓";content:"↓"/"";marg
       <div id="gradeReconciliation" class="recon" role="status" aria-live="polite"></div>
       <p id="gradeSummary" class="visually-hidden" aria-live="polite"></p>
 
+      <div id="simPanel" class="sim-panel">
+        <div class="sim-bar">
+          <div>
+            <div class="sim-title">Moderation simulator</div>
+            <div class="sim-sub">Test cut-off adjustments before committing</div>
+          </div>
+          <button type="button" id="simToggle" class="sim-toggle-btn" aria-expanded="false" disabled>Simulate</button>
+        </div>
+        <div id="simBody" class="sim-body" hidden>
+          <div class="sim-controls">
+            <div class="sim-field">
+              <label for="simGradeSelect" class="sim-label">Grade</label>
+              <select id="simGradeSelect" class="sim-select">
+                <option value="A">Grade A</option>
+                <option value="A-">Grade A-</option>
+                <option value="B">Grade B</option>
+                <option value="B-">Grade B-</option>
+                <option value="C">Grade C</option>
+                <option value="C-">Grade C-</option>
+                <option value="D">Grade D</option>
+              </select>
+            </div>
+            <div class="sim-field">
+              <span class="sim-label">Cut-off delta</span>
+              <div class="stepper sim-stepper">
+                <button type="button" id="simDeltaMinus" class="step-btn" aria-label="Decrease simulated cutoff">−</button>
+                <span id="simDeltaValue" class="sim-delta-display">-1</span>
+                <button type="button" id="simDeltaPlus" class="step-btn" aria-label="Increase simulated cutoff">+</button>
+              </div>
+            </div>
+          </div>
+          <div id="simFeedback" class="sim-feedback" role="status" aria-live="polite"></div>
+          <div class="sim-actions">
+            <button type="button" id="simApplyBtn" class="primary sim-action-btn">Apply to cut-offs</button>
+            <button type="button" id="simResetBtn" class="sim-action-btn">Exit simulation</button>
+          </div>
+        </div>
+      </div>
+
       <div class="band-foot">
         <div id="rangeError" role="alert" aria-live="polite"></div>
         <div class="actions">
@@ -537,7 +827,8 @@ th[aria-sort=descending] .sort-button::after{content:"↓";content:"↓"/"";marg
         <p class="panel-meta">5-mark bins · dashed lines mark grade cut-offs</p>
       </div>
       <div class="chart">
-        <canvas id="hist" role="img" aria-describedby="histDescription"></canvas>
+        <canvas id="hist" role="img" tabindex="0" aria-label="Marks distribution chart. Use arrow keys to explore bins." aria-describedby="histDescription"></canvas>
+        <div id="histTooltip" class="chart-tooltip" role="status" aria-live="polite" hidden></div>
         <p id="histDescription" class="visually-hidden" aria-live="polite">Upload a workbook and choose a course to view its marks distribution.</p>
       </div>
       <dl class="stats">
@@ -555,6 +846,17 @@ th[aria-sort=descending] .sort-button::after{content:"↓";content:"↓"/"";marg
           <p id="previewCount" class="panel-meta">Choose a course to review student grades.</p>
         </div>
         <div class="filters">
+          <div class="grade-filter" id="gradeChips" role="group" aria-label="Filter students by grade">
+            <button type="button" class="grade-chip active" data-grade="ALL" aria-pressed="true" disabled>All</button>
+            <button type="button" class="grade-chip" data-grade="A" aria-pressed="false" disabled>A</button>
+            <button type="button" class="grade-chip" data-grade="A-" aria-pressed="false" disabled>A-</button>
+            <button type="button" class="grade-chip" data-grade="B" aria-pressed="false" disabled>B</button>
+            <button type="button" class="grade-chip" data-grade="B-" aria-pressed="false" disabled>B-</button>
+            <button type="button" class="grade-chip" data-grade="C" aria-pressed="false" disabled>C</button>
+            <button type="button" class="grade-chip" data-grade="C-" aria-pressed="false" disabled>C-</button>
+            <button type="button" class="grade-chip" data-grade="D" aria-pressed="false" disabled>D</button>
+            <button type="button" class="grade-chip" data-grade="E" aria-pressed="false" disabled>E</button>
+          </div>
           <label class="check"><input id="nearOnly" type="checkbox" disabled>Near a cut-off only</label>
           <div class="search">
             <label for="previewSearch" class="visually-hidden">Find a BITS ID</label>
@@ -579,6 +881,7 @@ th[aria-sort=descending] .sort-button::after{content:"↓";content:"↓"/"";marg
 </div>
 
 <script>
+// Constants & configuration
 const GRADES=["A","A-","B","B-","C","C-","D","E"];
 const DEFAULTS={
   "A":[80,100],"A-":[70,79],"B":[60,69],"B-":[50,59],
@@ -587,25 +890,35 @@ const DEFAULTS={
 const CUTOFF_GRADES=GRADES.slice(0,-1);
 const DEFAULT_CUTOFFS=Object.fromEntries(CUTOFF_GRADES.map(g=>[g,DEFAULTS[g][0]]));
 const STORAGE_KEY="codeforge.gradeCutoffs.v1";
+const THEME_STORAGE_KEY="codeforge-theme";
 const SHEETJS_SOURCES=["xlsx.full.min.js","https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"];
+const SAMPLE_SOURCES=["sample-marks.xlsx","https://raw.githubusercontent.com/samyyy2311/CodeForge/main/sample-marks.xlsx"];
 const NEAR_CUTOFF=2;
 const UNDO_LIMIT=50;
-const SAMPLE_SOURCES=["sample-marks.xlsx","https://raw.githubusercontent.com/samyyy2311/CodeForge/main/sample-marks.xlsx"];
 const HEADER_ALIASES={
   "bits id":"BITS ID","student's bits id":"BITS ID","students bits id":"BITS ID",
   "course":"Course",
   "total marks":"Total Marks","total marks (out of 100)":"Total Marks"
 };
 
+// Application state & DOM references
 let data=[];
 let previousSummary={};
 let chartFrame=0;
+let resizeFrame=0;
 let uploadToken=0;
 let previousCutoffs=null;
 let undoStack=[];
 let sheetjsLoading=null;
 let previewSortKey="id";
 let previewSortDirection=1;
+let selectedGradeFilter="ALL";
+let hoveredBinIndex=null;
+let simActive=false;
+let simGrade="A";
+let simDelta=-1;
+let activeCourse=0;
+let dragDepth=0;
 
 const instructor=document.getElementById("instructor");
 const file=document.getElementById("file");
@@ -614,33 +927,11 @@ const loadSample=document.getElementById("loadSample");
 const clearFile=document.getElementById("clearFile");
 const sampleTag=document.getElementById("sampleTag");
 const themeToggle=document.getElementById("themeToggle");
-
-function updateThemeToggleLabel(){
-  if(!themeToggle) return;
-  const current=document.documentElement.getAttribute("data-theme");
-  const isDark=current==="dark"||(!current&&window.matchMedia("(prefers-color-scheme: dark)").matches);
-  themeToggle.textContent=isDark?"Light mode":"Dark mode";
-}
-function initTheme(){
-  const saved=localStorage.getItem("codeforge-theme");
-  if(saved){
-    document.documentElement.setAttribute("data-theme",saved);
-  }
-  updateThemeToggleLabel();
-}
-initTheme();
-if(themeToggle){
-  themeToggle.onclick=()=>{
-    const current=document.documentElement.getAttribute("data-theme");
-    const isDark=current==="dark"||(!current&&window.matchMedia("(prefers-color-scheme: dark)").matches);
-    const next=isDark?"light":"dark";
-    document.documentElement.setAttribute("data-theme",next);
-    localStorage.setItem("codeforge-theme",next);
-    updateThemeToggleLabel();
-    redrawChart();
-  };
-}
 const course=document.getElementById("course");
+const coursePicker=document.getElementById("coursePicker");
+const courseButton=document.getElementById("courseButton");
+const courseButtonValue=courseButton?courseButton.querySelector(".picker-value"):null;
+const courseList=document.getElementById("courseList");
 const welcome=document.getElementById("welcome");
 const grades=document.getElementById("grades");
 const rangeError=document.getElementById("rangeError");
@@ -651,6 +942,7 @@ const downloadHint=document.getElementById("downloadHint");
 const resetRanges=document.getElementById("resetRanges");
 const undoRanges=document.getElementById("undoRanges");
 const hist=document.getElementById("hist");
+const histTooltip=document.getElementById("histTooltip");
 const histDescription=document.getElementById("histDescription");
 const min=document.getElementById("min");
 const max=document.getElementById("max");
@@ -673,7 +965,45 @@ const sortHeaders={
   marks:document.getElementById("marksHeader"),
   grade:document.getElementById("gradeHeader")
 };
+const gradeChips=document.getElementById("gradeChips");
+const simPanel=document.getElementById("simPanel");
+const simToggle=document.getElementById("simToggle");
+const simBody=document.getElementById("simBody");
+const simGradeSelect=document.getElementById("simGradeSelect");
+const simDeltaMinus=document.getElementById("simDeltaMinus");
+const simDeltaPlus=document.getElementById("simDeltaPlus");
+const simDeltaValue=document.getElementById("simDeltaValue");
+const simFeedback=document.getElementById("simFeedback");
+const simApplyBtn=document.getElementById("simApplyBtn");
+const simResetBtn=document.getElementById("simResetBtn");
 
+// Theme handling
+function updateThemeToggleLabel(){
+  if(!themeToggle) return;
+  const current=document.documentElement.getAttribute("data-theme");
+  const isDark=current==="dark"||(!current&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+  themeToggle.textContent=isDark?"Light mode":"Dark mode";
+}
+
+function initTheme(){
+  const saved=localStorage.getItem(THEME_STORAGE_KEY);
+  if(saved){
+    document.documentElement.setAttribute("data-theme",saved);
+  }
+  updateThemeToggleLabel();
+}
+
+function toggleTheme(){
+  const current=document.documentElement.getAttribute("data-theme");
+  const isDark=current==="dark"||(!current&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const next=isDark?"light":"dark";
+  document.documentElement.setAttribute("data-theme",next);
+  localStorage.setItem(THEME_STORAGE_KEY,next);
+  updateThemeToggleLabel();
+  redrawChart();
+}
+
+// Workbook ingestion & validation
 function loadScript(src){
   return new Promise((resolve,reject)=>{
     const script=document.createElement("script");
@@ -692,16 +1022,21 @@ function loadSheetJS(){
   return sheetjsLoading;
 }
 
+function canonicalHeader(header){
+  const key=String(header).trim().replace(/\s+/g," ").replace(/[\u2018\u2019]/g,"'").toLocaleLowerCase();
+  return HEADER_ALIASES[key]||header;
+}
+
+function plural(count,word){
+  return `${count} ${count===1?word:word+"s"}`;
+}
+
 function showFileError(message){
   welcome.textContent=message;
   welcome.className="error";
   downloadHint.textContent=message;
   uploadErrors.hidden=true;
   uploadErrorList.replaceChildren();
-}
-
-function plural(count,word){
-  return `${count} ${count===1?word:word+"s"}`;
 }
 
 function showRowErrors(errors){
@@ -723,157 +1058,6 @@ function setFileName(name,isSample=false){
   if(fileName) fileName.hidden=isSample;
   if(sampleTag) sampleTag.hidden=!isSample;
   if(clearFile) clearFile.hidden=!name;
-}
-
-function resetWorkbook(){
-  data=[];
-  uploadToken++;
-  file.value="";
-  setFileName("",false);
-  course.innerHTML='<option value="">Select a course to begin</option>';
-  course.value="";
-  course.disabled=false;
-  syncCoursePicker();
-  grades.replaceChildren();
-  resetRanges.disabled=true;
-  undoRanges.disabled=true;
-  previousCutoffs=null;
-  undoStack=[];
-  download.disabled=true;
-  downloadXlsx.disabled=true;
-  thankyou.textContent="";
-  welcome.textContent="";
-  welcome.className="notice";
-  uploadErrors.hidden=true;
-  uploadErrorList.replaceChildren();
-  rangeError.textContent="";
-  previewSortKey="id";
-  previewSortDirection=1;
-  Object.values(sortHeaders).forEach(header=>header.removeAttribute("aria-sort"));
-  clearAnalytics();
-  updateDownloadState();
-}
-if(clearFile) clearFile.onclick=resetWorkbook;
-
-function clearAnalytics(){
-  if(chartFrame) cancelAnimationFrame(chartFrame);
-  chartFrame=0;
-  document.body.classList.remove("has-course");
-  ["min","max","avg","med"].forEach(id=>{
-    document.getElementById(id).textContent="N/A";
-  });
-  hist.getContext("2d").clearRect(0,0,hist.width,hist.height);
-  histDescription.textContent="Upload a workbook and choose a course to view its marks distribution.";
-  gradeSummary.textContent="";
-  gradeReconciliation.textContent="";
-  gradeReconciliation.className="recon";
-  clearPreview("Choose a course to review student grades.");
-}
-
-function clearPreview(message){
-  previewSearch.value="";
-  previewSearch.disabled=true;
-  nearOnly.checked=false;
-  nearOnly.disabled=true;
-  previewCount.classList.remove("warn");
-  previewCount.textContent=message;
-  previewBody.replaceChildren();
-}
-
-function gradeForMark(mark,ranges){
-  return GRADES.find(g=>mark>=ranges[g][0]&&mark<=ranges[g][1])||"Unassigned";
-}
-
-function cutoffNote(mark,grade,ranges){
-  const index=GRADES.indexOf(grade);
-  if(index<1) return "";
-  const above=GRADES[index-1];
-  const gap=ranges[above][0]-mark;
-  return gap<=NEAR_CUTOFF?`${gap} ${gap===1?"mark":"marks"} below ${above}`:"";
-}
-
-function gradedRows(){
-  const ranges=readRanges();
-  return data.filter(d=>d.Course===course.value).map(d=>{
-    const grade=gradeForMark(d["Total Marks"],ranges);
-    return {...d,Grade:grade,Note:cutoffNote(d["Total Marks"],grade,ranges)};
-  });
-}
-
-function renderPreview(){
-  const courseRows=data.filter(row=>row.Course===course.value);
-  const query=previewSearch.value.trim().toLocaleLowerCase();
-  const valid=!!document.getElementById("Amin")&&!validateRanges();
-  const graded=valid?gradedRows():courseRows.map(row=>({...row,Grade:"—",Note:""}));
-  const nearCount=graded.filter(row=>row.Note).length;
-  const rows=graded
-    .filter(row=>row["BITS ID"].toLocaleLowerCase().includes(query))
-    .filter(row=>!nearOnly.checked||row.Note);
-  rows.sort((a,b)=>{
-    let comparison;
-    if(previewSortKey==="marks") comparison=a["Total Marks"]-b["Total Marks"];
-    else if(previewSortKey==="grade") comparison=GRADES.indexOf(a.Grade)-GRADES.indexOf(b.Grade);
-    else comparison=a["BITS ID"].localeCompare(b["BITS ID"],undefined,{numeric:true});
-    return comparison*previewSortDirection||a["BITS ID"].localeCompare(b["BITS ID"],undefined,{numeric:true});
-  });
-  previewSearch.disabled=!course.value;
-  nearOnly.disabled=!course.value||!valid;
-  previewBody.replaceChildren();
-  rows.forEach(row=>{
-    const tr=document.createElement("tr");
-    if(row.Note) tr.className="near-cutoff";
-    [row["BITS ID"],row["Total Marks"],row.Grade,row.Note].forEach((value,i)=>{
-      const td=document.createElement("td");
-      td.textContent=String(value);
-      td.className=["","num","g","note"][i];
-      tr.appendChild(td);
-    });
-    previewBody.appendChild(tr);
-  });
-  const filtered=query||(nearOnly.checked&&valid);
-  let summary;
-  if(!valid) summary=`${courseRows.length} ${courseRows.length===1?"student":"students"} in ${course.value}. Fix the grade ranges to see their grades.`;
-  else if(rows.length===0) summary=query?"No students match this BITS ID.":`No students are within ${NEAR_CUTOFF} marks of the next grade.`;
-  else if(filtered) summary=`Showing ${rows.length} of ${courseRows.length} students.`;
-  else summary=`${courseRows.length} ${courseRows.length===1?"student":"students"} in ${course.value}. ${nearCount} within ${NEAR_CUTOFF} marks of the next grade.`;
-  previewCount.textContent=summary;
-  previewCount.classList.toggle("warn",!valid);
-  Object.entries(sortHeaders).forEach(([key,header])=>{
-    header.setAttribute("aria-sort",key===previewSortKey
-      ? previewSortDirection===1?"ascending":"descending"
-      : "none");
-  });
-}
-
-function changePreviewSort(key){
-  if(previewSortKey===key) previewSortDirection*=-1;
-  else{previewSortKey=key;previewSortDirection=1;}
-  renderPreview();
-}
-
-function csvCell(value){
-  let text=String(value??"");
-  if(/^[\s]*[=+@-]/.test(text)) text="'"+text;
-  return `"${text.replaceAll('"','""')}"`;
-}
-
-function updateDownloadState(){
-  const hasStudents=data.some(d=>d.Course===course.value);
-  const invalid=validateRanges();
-  rangeError.textContent=invalid;
-  download.disabled=!!invalid||!course.value||!hasStudents||!instructor.value.trim();
-  downloadXlsx.disabled=download.disabled;
-  if(invalid) downloadHint.textContent="Fix the grade ranges before downloading.";
-  else if(!instructor.value.trim()) downloadHint.textContent="Enter the instructor name to continue.";
-  else if(!data.length) downloadHint.textContent="Upload a marks workbook to continue.";
-  else if(!course.value) downloadHint.textContent="Choose a course to continue.";
-  else if(!hasStudents) downloadHint.textContent="There are no student records for this course.";
-  else downloadHint.textContent="Ready to download the grades for this course.";
-}
-
-function canonicalHeader(header){
-  const key=String(header).trim().replace(/\s+/g," ").replace(/[\u2018\u2019]/g,"'").toLocaleLowerCase();
-  return HEADER_ALIASES[key]||header;
 }
 
 function parseWorkbook(buffer){
@@ -963,7 +1147,8 @@ async function loadWorkbook(name,readBuffer,readError,isSample=false){
   uploadErrorList.replaceChildren();
   downloadHint.textContent="Reading the marks workbook...";
   clearAnalytics();
-  welcome.className="notice"; welcome.textContent="Reading marks file…";
+  welcome.className="notice";
+  welcome.textContent="Reading marks file…";
   try{
     let buffer;
     try{
@@ -988,215 +1173,36 @@ async function loadWorkbook(name,readBuffer,readError,isSample=false){
   }
 }
 
-file.onchange=()=>{
-  const selectedFile=file.files[0];
+function resetWorkbook(){
+  data=[];
+  uploadToken++;
   file.value="";
-  if(!selectedFile) return;
-  loadWorkbook(selectedFile.name,()=>selectedFile.arrayBuffer(),"The selected file could not be read.",false);
-};
-
-loadSample.onclick=()=>{
-  loadWorkbook("sample-marks.xlsx",async()=>{
-    for(const src of SAMPLE_SOURCES){
-      try{
-        const response=await fetch(src);
-        if(response.ok) return await response.arrayBuffer();
-      }catch{
-        // try the next source
-      }
-    }
-    throw new Error("sample unavailable");
-  },"The sample workbook could not be downloaded. Check your internet connection and try again.",true);
-};
-
-const hasFiles=e=>[...(e.dataTransfer?.types||[])].includes("Files");
-let dragDepth=0;
-document.addEventListener("dragenter",e=>{
-  if(!hasFiles(e)) return;
-  dragDepth++;
-  document.body.classList.add("dragging");
-});
-document.addEventListener("dragleave",e=>{
-  if(!hasFiles(e)||--dragDepth>0) return;
-  dragDepth=0;
-  document.body.classList.remove("dragging");
-});
-document.addEventListener("dragover",e=>{
-  if(hasFiles(e)) e.preventDefault();
-});
-document.addEventListener("drop",e=>{
-  if(!hasFiles(e)) return;
-  e.preventDefault();
-  dragDepth=0;
-  document.body.classList.remove("dragging");
-  const dropped=e.dataTransfer.files[0];
-  if(!dropped) return;
-  if(!/\.xlsx?$/i.test(dropped.name)){
-    showFileError("Only .xls and .xlsx files can be uploaded.");
-    return;
-  }
-  loadWorkbook(dropped.name,()=>dropped.arrayBuffer(),"The dropped file could not be read.",false);
-});
-
-loadSheetJS().catch(()=>{});
-
-previewSearch.oninput=renderPreview;
-nearOnly.onchange=renderPreview;
-sortId.onclick=()=>changePreviewSort("id");
-sortMarks.onclick=()=>changePreviewSort("marks");
-sortGrade.onclick=()=>changePreviewSort("grade");
-
-instructor.oninput=()=>{
-  updateDownloadState();
-  if(course.value){
-    welcome.className="notice";
-    welcome.textContent=instructor.value.trim()
-      ? `Hello, ${instructor.value.trim()}. Review the grade ranges and class summary before exporting.`
-      : "Enter the instructor name to enable grade downloads.";
-  }
-};
-
-course.onchange=()=>{
-  if(!course.value){
-    grades.replaceChildren();
-    resetRanges.disabled=true;
-    undoRanges.disabled=true;
-    undoStack=[];
-    previousCutoffs=null;
-    download.disabled=true;
-    downloadXlsx.disabled=true;
-    clearAnalytics();
-    updateDownloadState();
-    return;
-  }
-  if(!instructor.value.trim()){
-    course.value="";
-    grades.replaceChildren();
-    resetRanges.disabled=true;
-    undoRanges.disabled=true;
-    undoStack=[];
-    previousCutoffs=null;
-    download.disabled=true;
-    downloadXlsx.disabled=true;
-    clearAnalytics();
-    welcome.className="error";
-    welcome.textContent="Enter the instructor name before selecting a course.";
-    updateDownloadState();
-    instructor.focus();
-    return;
-  }
+  setFileName("",false);
+  course.innerHTML='<option value="">Select a course to begin</option>';
+  course.value="";
+  course.disabled=false;
+  syncCoursePicker();
+  grades.replaceChildren();
+  resetRanges.disabled=true;
+  undoRanges.disabled=true;
+  previousCutoffs=null;
+  undoStack=[];
+  download.disabled=true;
+  downloadXlsx.disabled=true;
+  thankyou.textContent="";
+  welcome.textContent="";
   welcome.className="notice";
-  welcome.textContent=`Hello, ${instructor.value.trim()}. Review the grade ranges and class summary before exporting.`;
-  buildGradeUI();
-  updateAll();
-};
-
-const coursePicker=document.getElementById("coursePicker");
-const courseButton=document.getElementById("courseButton");
-const courseButtonValue=courseButton.querySelector(".picker-value");
-const courseList=document.getElementById("courseList");
-let activeCourse=0;
-
-function courseOptions(){
-  return [...course.options].filter(option=>option.value);
+  uploadErrors.hidden=true;
+  uploadErrorList.replaceChildren();
+  rangeError.textContent="";
+  previewSortKey="id";
+  previewSortDirection=1;
+  Object.values(sortHeaders).forEach(header=>header.removeAttribute("aria-sort"));
+  clearAnalytics();
+  updateDownloadState();
 }
 
-function syncCoursePicker(){
-  const options=courseOptions();
-  courseButton.disabled=!options.length;
-  courseButtonValue.textContent=course.value||(options.length?"Select a course":"Upload a workbook first");
-  courseButtonValue.classList.toggle("placeholder",!course.value);
-  if(!options.length) closeCourseList(false);
-  else if(!courseList.hidden) renderCourseList();
-}
-
-function renderCourseList(){
-  courseList.replaceChildren();
-  courseOptions().forEach((option,i)=>{
-    const item=document.createElement("li");
-    item.id=`courseOption${i}`;
-    item.setAttribute("role","option");
-    item.setAttribute("aria-selected",String(option.value===course.value));
-    const name=document.createElement("span");
-    name.className="picker-name";
-    name.textContent=option.value;
-    const meta=document.createElement("span");
-    meta.className="picker-meta";
-    const count=data.filter(d=>d.Course===option.value).length;
-    meta.textContent=plural(count,"student")+(isDefaultCutoffs(cutoffsForCourse(option.value))?"":" \u00b7 custom ranges");
-    item.append(name,meta);
-    item.onmousemove=()=>{if(activeCourse!==i) setActiveCourse(i);};
-    item.onclick=()=>chooseCourse(i);
-    courseList.appendChild(item);
-  });
-  setActiveCourse(activeCourse);
-}
-
-function setActiveCourse(i){
-  const items=[...courseList.children];
-  if(!items.length) return;
-  activeCourse=Math.max(0,Math.min(items.length-1,i));
-  items.forEach((item,j)=>item.classList.toggle("active",j===activeCourse));
-  courseList.setAttribute("aria-activedescendant",items[activeCourse].id);
-  items[activeCourse].scrollIntoView({block:"nearest"});
-}
-
-function openCourseList(){
-  if(courseButton.disabled||!courseList.hidden) return;
-  activeCourse=Math.max(0,courseOptions().findIndex(option=>option.value===course.value));
-  courseList.hidden=false;
-  courseButton.setAttribute("aria-expanded","true");
-  renderCourseList();
-  courseList.focus();
-}
-
-function closeCourseList(refocus=true){
-  if(courseList.hidden) return;
-  courseList.hidden=true;
-  courseButton.setAttribute("aria-expanded","false");
-  courseList.removeAttribute("aria-activedescendant");
-  if(refocus) courseButton.focus();
-}
-
-function chooseCourse(i){
-  const option=courseOptions()[i];
-  closeCourseList();
-  if(!option||option.value===course.value) return;
-  course.value=option.value;
-  course.dispatchEvent(new Event("change"));
-}
-
-courseButton.onclick=()=>courseList.hidden?openCourseList():closeCourseList();
-courseButton.onkeydown=e=>{
-  if(e.key==="ArrowDown"||e.key==="ArrowUp"){
-    e.preventDefault();
-    openCourseList();
-  }
-};
-courseList.onkeydown=e=>{
-  const count=courseList.children.length;
-  if(e.key==="ArrowDown") setActiveCourse(activeCourse+1);
-  else if(e.key==="ArrowUp") setActiveCourse(activeCourse-1);
-  else if(e.key==="Home") setActiveCourse(0);
-  else if(e.key==="End") setActiveCourse(count-1);
-  else if(e.key==="Enter"||e.key===" ") chooseCourse(activeCourse);
-  else if(e.key==="Escape") closeCourseList();
-  else if(e.key==="Tab"){closeCourseList(false);return;}
-  else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
-    const names=courseOptions().map(option=>option.value.toLocaleLowerCase());
-    const letter=e.key.toLocaleLowerCase();
-    const next=[...names.keys()].map(k=>(activeCourse+1+k)%count).find(k=>names[k].startsWith(letter));
-    if(next!==undefined) setActiveCourse(next);
-  }
-  else return;
-  e.preventDefault();
-};
-courseList.addEventListener("focusout",e=>{
-  if(!coursePicker.contains(e.relatedTarget)) closeCourseList(false);
-});
-course.addEventListener("change",syncCoursePicker);
-new MutationObserver(syncCoursePicker).observe(course,{childList:true});
-
+// Grade & cutoff calculations
 function loadSavedCutoffs(){
   try{
     const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
@@ -1230,6 +1236,61 @@ function saveCutoffs(courseName,cutoffs){
   }catch{
     // storage can be blocked (e.g. private mode), saving is optional
   }
+}
+
+function readCutoffs(){
+  return Object.fromEntries(CUTOFF_GRADES.map(g=>[g,Number(document.getElementById(g+"min").value)]));
+}
+
+function readRanges(){
+  const cutoffs=readCutoffs();
+  const ranges={};
+  let top=100;
+  GRADES.forEach(g=>{
+    const lowest=g==="E"?0:cutoffs[g];
+    ranges[g]=[lowest,top];
+    top=lowest-1;
+  });
+  return ranges;
+}
+
+function setCutoffs(cutoffs){
+  CUTOFF_GRADES.forEach(g=>{
+    document.getElementById(g+"min").value=String(cutoffs[g]);
+  });
+}
+
+function saveUndoPoint(){
+  if(!previousCutoffs) return;
+  undoStack.push({...previousCutoffs});
+  if(undoStack.length>UNDO_LIMIT) undoStack.shift();
+  undoRanges.disabled=false;
+}
+
+function validateRanges(){
+  if(!document.getElementById("Amin")) return "";
+  const ranges=readRanges();
+  for(let i=1;i<GRADES.length;i++){
+    const g=GRADES[i], above=GRADES[i-1];
+    if(ranges[g][0]>ranges[g][1]) return `${g} must start below ${above}, which starts at ${ranges[above][0]}.`;
+  }
+  return "";
+}
+
+function renderBandEnds(){
+  const ranges=readRanges();
+  CUTOFF_GRADES.forEach(g=>{
+    const input=document.getElementById(g+"min");
+    const [down,up]=input.parentElement.querySelectorAll(".step-btn");
+    input.setAttribute("aria-valuenow",input.value);
+    down.disabled=Number(input.value)<=1;
+    up.disabled=Number(input.value)>=100;
+  });
+  GRADES.forEach(g=>{
+    const empty=ranges[g][0]>ranges[g][1];
+    document.getElementById(g+"max").textContent=empty?"—":ranges[g][1];
+    document.getElementById(g+"max").closest("tr").classList.toggle("invalid",empty);
+  });
 }
 
 function buildGradeUI(){
@@ -1330,74 +1391,107 @@ function buildGradeUI(){
   previousCutoffs=readCutoffs();
 }
 
-function setCutoffs(cutoffs){
-  CUTOFF_GRADES.forEach(g=>{
-    document.getElementById(g+"min").value=String(cutoffs[g]);
-  });
+function computeStats(){
+  const m=data.filter(d=>d.Course===course.value)
+    .map(d=>d["Total Marks"]).sort((a,b)=>a-b);
+  if(!m.length){["min","max","avg","med"].forEach(id=>document.getElementById(id).textContent="N/A");return;}
+  min.textContent=m[0];
+  max.textContent=m[m.length-1];
+  avg.textContent=(m.reduce((a,b)=>a+b,0)/m.length).toFixed(2);
+  med.textContent=m.length%2?m[Math.floor(m.length/2)]
+    :(m[m.length/2-1]+m[m.length/2])/2;
 }
 
-resetRanges.onclick=()=>{
-  if(!document.getElementById("Amin")) return;
-  if(!confirm("Reset all grade ranges to the default values?")) return;
-  saveUndoPoint();
-  setCutoffs(DEFAULT_CUTOFFS);
-  updateAll();
-};
-
-undoRanges.onclick=()=>{
-  if(!undoStack.length) return;
-  setCutoffs(undoStack.pop());
-  undoRanges.disabled=!undoStack.length;
-  updateAll();
-};
-
-function readCutoffs(){
-  return Object.fromEntries(CUTOFF_GRADES.map(g=>[g,Number(document.getElementById(g+"min").value)]));
-}
-
-function readRanges(){
-  const cutoffs=readCutoffs();
-  const ranges={};
-  let top=100;
-  GRADES.forEach(g=>{
-    const lowest=g==="E"?0:cutoffs[g];
-    ranges[g]=[lowest,top];
-    top=lowest-1;
-  });
-  return ranges;
-}
-
-function saveUndoPoint(){
-  if(!previousCutoffs) return;
-  undoStack.push({...previousCutoffs});
-  if(undoStack.length>UNDO_LIMIT) undoStack.shift();
-  undoRanges.disabled=false;
-}
-
-function validateRanges(){
-  if(!document.getElementById("Amin")) return "";
+function computeGradeSummary(){
+  const students=data.filter(d=>d.Course===course.value);
+  const counts=Object.fromEntries(GRADES.map(g=>[g,0]));
+  let assigned=0;
+  let unassigned=0;
   const ranges=readRanges();
-  for(let i=1;i<GRADES.length;i++){
-    const g=GRADES[i], above=GRADES[i-1];
-    if(ranges[g][0]>ranges[g][1]) return `${g} must start below ${above}, which starts at ${ranges[above][0]}.`;
+  students.forEach(student=>{
+    const matches=GRADES.filter(g=>student["Total Marks"]>=ranges[g][0]&&student["Total Marks"]<=ranges[g][1]);
+    if(matches.length===1){counts[matches[0]]++;assigned++;}
+    else if(matches.length===0) unassigned++;
+  });
+  let simCounts=null;
+  if(simActive){
+    const simRanges=getSimulatedRanges();
+    simCounts=Object.fromEntries(GRADES.map(g=>[g,0]));
+    students.forEach(student=>{
+      const m=gradeForMark(student["Total Marks"],simRanges);
+      if(simCounts[m]!==undefined) simCounts[m]++;
+    });
   }
-  return "";
+  const largest=Math.max(1,...GRADES.map(g=>counts[g]));
+  const percentages={};
+  GRADES.forEach(g=>{
+    const percentage=students.length?(counts[g]/students.length*100).toFixed(1):"0.0";
+    percentages[g]=percentage;
+    const cell=document.getElementById(g+"count");
+    const fill=document.getElementById(g+"bar");
+    if(cell){
+      const count=document.createElement("b");
+      count.textContent=counts[g];
+      const share=document.createElement("span");
+      share.className="pct";
+      share.textContent=`(${percentage}%)`;
+      if(simActive&&simCounts&&simCounts[g]!==counts[g]){
+        const diff=simCounts[g]-counts[g];
+        const diffSpan=document.createElement("span");
+        diffSpan.className="sim-tag-band";
+        diffSpan.textContent=`\u2192 ${simCounts[g]} (${diff>0?"+"+diff:diff})`;
+        cell.replaceChildren(count,document.createTextNode(" "),share,document.createTextNode(" "),diffSpan);
+      }else{
+        cell.replaceChildren(count,document.createTextNode(" "),share);
+      }
+      if(previousSummary[g]!==undefined&&previousSummary[g]!==counts[g]){
+        count.classList.add("pulse");
+        setTimeout(()=>count.classList.remove("pulse"),30);
+      }
+    }
+    if(fill) fill.style.width=`${counts[g]/largest*100}%`;
+    previousSummary[g]=counts[g];
+  });
+  gradeSummary.textContent=GRADES.map(g=>`${g}: ${counts[g]} (${percentages[g]}%)`).join(", ");
+  if(bandsSource){
+    if(simActive){
+      bandsSource.textContent="Moderation simulation in preview";
+      bandsSource.classList.add("sim-active");
+    }else{
+      bandsSource.classList.remove("sim-active");
+    }
+  }
+  const invalid=validateRanges();
+  if(invalid){
+    gradeReconciliation.className="recon warn";
+    gradeReconciliation.textContent="Fix the grade ranges to check the totals.";
+  }else if(assigned===students.length){
+    gradeReconciliation.className="recon ok";
+    gradeReconciliation.textContent=`All ${students.length} students have one grade. The grade counts add up to ${assigned}.`;
+  }else{
+    gradeReconciliation.className="recon warn";
+    gradeReconciliation.textContent=`${unassigned} of ${students.length} students do not have a grade. Check the ranges before exporting.`;
+  }
 }
 
-function renderBandEnds(){
-  const ranges=readRanges();
-  CUTOFF_GRADES.forEach(g=>{
-    const input=document.getElementById(g+"min");
-    const [down,up]=input.parentElement.querySelectorAll(".step-btn");
-    input.setAttribute("aria-valuenow",input.value);
-    down.disabled=Number(input.value)<=1;
-    up.disabled=Number(input.value)>=100;
-  });
-  GRADES.forEach(g=>{
-    const empty=ranges[g][0]>ranges[g][1];
-    document.getElementById(g+"max").textContent=empty?"—":ranges[g][1];
-    document.getElementById(g+"max").closest("tr").classList.toggle("invalid",empty);
-  });
+function updateDownloadState(){
+  const hasStudents=data.some(d=>d.Course===course.value);
+  const invalid=validateRanges();
+  rangeError.textContent=invalid;
+  download.disabled=!!invalid||!course.value||!hasStudents||!instructor.value.trim();
+  downloadXlsx.disabled=download.disabled;
+  if(simToggle){
+    simToggle.disabled=!!invalid||!course.value||!hasStudents;
+    if(simToggle.disabled&&simActive){
+      exitSimulation();
+    }
+  }
+  if(invalid) downloadHint.textContent="Fix the grade ranges before downloading.";
+  else if(!instructor.value.trim()) downloadHint.textContent="Enter the instructor name to continue.";
+  else if(!data.length) downloadHint.textContent="Upload a marks workbook to continue.";
+  else if(!course.value) downloadHint.textContent="Choose a course to continue.";
+  else if(!hasStudents) downloadHint.textContent="There are no student records for this course.";
+  else downloadHint.textContent="Ready to download the grades for this course.";
 }
 
 function updateAll(){
@@ -1415,6 +1509,199 @@ function updateAll(){
   previousCutoffs=cutoffs;
 }
 
+function clearAnalytics(){
+  if(chartFrame) cancelAnimationFrame(chartFrame);
+  chartFrame=0;
+  hoveredBinIndex=null;
+  if(histTooltip) histTooltip.hidden=true;
+  exitSimulation();
+  document.body.classList.remove("has-course");
+  ["min","max","avg","med"].forEach(id=>{
+    document.getElementById(id).textContent="N/A";
+  });
+  hist.getContext("2d").clearRect(0,0,hist.width,hist.height);
+  histDescription.textContent="Upload a workbook and choose a course to view its marks distribution.";
+  gradeSummary.textContent="";
+  gradeReconciliation.textContent="";
+  gradeReconciliation.className="recon";
+  clearPreview("Choose a course to review student grades.");
+}
+
+// Moderation simulation
+function getSimulatedRanges(){
+  const base=readRanges();
+  const sim={};
+  GRADES.forEach(g=>{sim[g]=[...base[g]];});
+  if(!simActive) return sim;
+  const orig=base[simGrade][0];
+  const newCut=Math.max(1,Math.min(100,orig+simDelta));
+  sim[simGrade][0]=newCut;
+  const idx=GRADES.indexOf(simGrade);
+  if(idx<GRADES.length-1){
+    const below=GRADES[idx+1];
+    sim[below][1]=Math.max(0,newCut-1);
+  }
+  return sim;
+}
+
+function exitSimulation(){
+  simActive=false;
+  if(simToggle){
+    simToggle.classList.remove("active");
+    simToggle.textContent="Simulate";
+    simToggle.setAttribute("aria-expanded","false");
+  }
+  if(simBody) simBody.hidden=true;
+  if(bandsSource){
+    bandsSource.classList.remove("sim-active");
+    if(document.getElementById("Amin")){
+      const cutoffs=readCutoffs();
+      bandsSource.textContent=isDefaultCutoffs(cutoffs)?"Default ranges":"Custom ranges, saved in this browser";
+    }
+  }
+}
+
+function updateSimulationView(){
+  if(!simActive) return;
+  const simRanges=getSimulatedRanges();
+  const students=data.filter(d=>d.Course===course.value);
+  const moved=students.filter(s=>gradeForMark(s["Total Marks"],readRanges())!==gradeForMark(s["Total Marks"],simRanges));
+  const newCut=simRanges[simGrade][0];
+  if(simFeedback){
+    simFeedback.innerHTML=`<strong>Simulation active:</strong> Grade ${simGrade} cut-off set to ${newCut} (${simDelta>0?"+"+simDelta:simDelta} marks). <strong>${moved.length} ${moved.length===1?"student moves":"students move"}</strong> to ${simGrade}.`;
+  }
+  computeGradeSummary();
+  renderPreview();
+  drawHistogram(false);
+}
+
+// Student filtering & sorting
+function gradeForMark(mark,ranges){
+  return GRADES.find(g=>mark>=ranges[g][0]&&mark<=ranges[g][1])||"Unassigned";
+}
+
+function cutoffNote(mark,grade,ranges){
+  const index=GRADES.indexOf(grade);
+  if(index<1) return "";
+  const above=GRADES[index-1];
+  const gap=ranges[above][0]-mark;
+  return gap<=NEAR_CUTOFF?`${gap} ${gap===1?"mark":"marks"} below ${above}`:"";
+}
+
+function gradedRows(){
+  const ranges=readRanges();
+  return data.filter(d=>d.Course===course.value).map(d=>{
+    const grade=gradeForMark(d["Total Marks"],ranges);
+    return {...d,Grade:grade,Note:cutoffNote(d["Total Marks"],grade,ranges)};
+  });
+}
+
+function renderPreview(){
+  const courseRows=data.filter(row=>row.Course===course.value);
+  const query=previewSearch.value.trim().toLocaleLowerCase();
+  const valid=!!document.getElementById("Amin")&&!validateRanges();
+  let graded;
+  if(!valid){
+    graded=courseRows.map(row=>({...row,Grade:"—",Note:""}));
+  }else if(simActive){
+    const simRanges=getSimulatedRanges();
+    const baseRanges=readRanges();
+    graded=courseRows.map(d=>{
+      const origGrade=gradeForMark(d["Total Marks"],baseRanges);
+      const simGradeVal=gradeForMark(d["Total Marks"],simRanges);
+      const moved=origGrade!==simGradeVal;
+      let note=cutoffNote(d["Total Marks"],simGradeVal,simRanges);
+      if(moved){
+        note=`Moves ${origGrade} \u2192 ${simGradeVal} (Simulated)`;
+      }
+      return {...d,Grade:simGradeVal,OrigGrade:origGrade,Simulated:moved,Note:note};
+    });
+  }else{
+    graded=gradedRows();
+  }
+  const nearCount=graded.filter(row=>row.Note).length;
+  const gradeFiltered=selectedGradeFilter!=="ALL"&&valid;
+  const rows=graded
+    .filter(row=>row["BITS ID"].toLocaleLowerCase().includes(query))
+    .filter(row=>!nearOnly.checked||row.Note)
+    .filter(row=>!gradeFiltered||row.Grade===selectedGradeFilter);
+  rows.sort((a,b)=>{
+    let comparison;
+    if(previewSortKey==="marks") comparison=a["Total Marks"]-b["Total Marks"];
+    else if(previewSortKey==="grade") comparison=GRADES.indexOf(a.Grade)-GRADES.indexOf(b.Grade);
+    else comparison=a["BITS ID"].localeCompare(b["BITS ID"],undefined,{numeric:true});
+    return comparison*previewSortDirection||a["BITS ID"].localeCompare(b["BITS ID"],undefined,{numeric:true});
+  });
+  previewSearch.disabled=!course.value;
+  nearOnly.disabled=!course.value||!valid;
+  const chipsDisabled=!course.value||!valid;
+  document.querySelectorAll(".grade-chip").forEach(c=>{
+    c.disabled=chipsDisabled;
+    const isAct=c.dataset.grade===selectedGradeFilter;
+    c.classList.toggle("active",isAct);
+    c.setAttribute("aria-pressed",isAct?"true":"false");
+  });
+  previewBody.replaceChildren();
+  rows.forEach(row=>{
+    const tr=document.createElement("tr");
+    if(row.Note) tr.className="near-cutoff";
+    if(row.Simulated) tr.classList.add("sim-promoted");
+    [row["BITS ID"],row["Total Marks"],row.Grade,row.Note].forEach((value,i)=>{
+      const td=document.createElement("td");
+      if(i===2&&row.Simulated){
+        td.innerHTML=`<span>${value}</span> <span class="sim-badge" title="Original: ${row.OrigGrade}">Simulated</span>`;
+      }else{
+        td.textContent=String(value);
+      }
+      td.className=["","num","g","note"][i];
+      tr.appendChild(td);
+    });
+    previewBody.appendChild(tr);
+  });
+  const filtered=query||(nearOnly.checked&&valid)||gradeFiltered;
+  let summary;
+  if(!valid) summary=`${courseRows.length} ${courseRows.length===1?"student":"students"} in ${course.value}. Fix the grade ranges to see their grades.`;
+  else if(rows.length===0){
+    if(query) summary="No students match this BITS ID.";
+    else if(nearOnly.checked) summary=`No students are within ${NEAR_CUTOFF} marks of the next grade.`;
+    else if(gradeFiltered) summary=`No students currently have grade ${selectedGradeFilter}.`;
+    else summary="No students found.";
+  }
+  else if(filtered) summary=`Showing ${rows.length} of ${courseRows.length} students.`;
+  else summary=`${courseRows.length} ${courseRows.length===1?"student":"students"} in ${course.value}. ${nearCount} within ${NEAR_CUTOFF} marks of the next grade.`;
+  previewCount.textContent=summary;
+  previewCount.classList.toggle("warn",!valid);
+  Object.entries(sortHeaders).forEach(([key,header])=>{
+    header.setAttribute("aria-sort",key===previewSortKey
+      ? previewSortDirection===1?"ascending":"descending"
+      : "none");
+  });
+}
+
+function changePreviewSort(key){
+  if(previewSortKey===key) previewSortDirection*=-1;
+  else{previewSortKey=key;previewSortDirection=1;}
+  renderPreview();
+}
+
+function clearPreview(message){
+  previewSearch.value="";
+  previewSearch.disabled=true;
+  nearOnly.checked=false;
+  nearOnly.disabled=true;
+  selectedGradeFilter="ALL";
+  document.querySelectorAll(".grade-chip").forEach(c=>{
+    c.disabled=true;
+    const isAll=c.dataset.grade==="ALL";
+    c.classList.toggle("active",isAll);
+    c.setAttribute("aria-pressed",isAll?"true":"false");
+  });
+  previewCount.classList.remove("warn");
+  previewCount.textContent=message;
+  previewBody.replaceChildren();
+}
+
+// Histogram rendering
 function drawHistogram(animate=true){
   if(chartFrame) cancelAnimationFrame(chartFrame);
   chartFrame=0;
@@ -1473,6 +1760,11 @@ function drawHistogram(animate=true){
         ctx.lineTo(x+w,base);
         ctx.closePath();
         ctx.fill();
+        if(i===hoveredBinIndex){
+          ctx.strokeStyle=ink2;
+          ctx.lineWidth=2;
+          ctx.stroke();
+        }
         ctx.globalAlpha=1;
       }
       if(v&&p===1){
@@ -1505,6 +1797,27 @@ function drawHistogram(animate=true){
         const x0=xAt(lo), x1=xAt(Math.min(100,hi+1));
         if(x1-x0>=16) ctx.fillText(g,(x0+x1)/2,12);
       });
+
+      if(simActive){
+        const simRanges=getSimulatedRanges();
+        const simCut=simRanges[simGrade][0];
+        if(simCut>0){
+          const simX=Math.round(xAt(simCut))+.5;
+          ctx.save();
+          ctx.strokeStyle=accent;
+          ctx.lineWidth=2;
+          ctx.setLineDash([4,2]);
+          ctx.beginPath();
+          ctx.moveTo(simX,16);
+          ctx.lineTo(simX,base);
+          ctx.stroke();
+          ctx.fillStyle=accent;
+          ctx.font=`700 10px ${font}`;
+          ctx.textAlign="center";
+          ctx.fillText(`Sim: ${simGrade} (${simCut})`,simX,12);
+          ctx.restore();
+        }
+      }
     }
 
     ctx.strokeStyle=rule;
@@ -1537,78 +1850,74 @@ function drawHistogram(animate=true){
   chartFrame=requestAnimationFrame(step);
 }
 
-let resizeFrame=0;
 function redrawChart(){
   if(!document.body.classList.contains("has-course")) return;
   cancelAnimationFrame(resizeFrame);
   resizeFrame=requestAnimationFrame(()=>drawHistogram(false));
 }
-window.addEventListener("resize",redrawChart);
-window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",redrawChart);
 
-function computeStats(){
-  const m=data.filter(d=>d.Course===course.value)
-    .map(d=>d["Total Marks"]).sort((a,b)=>a-b);
-  if(!m.length){["min","max","avg","med"].forEach(id=>document.getElementById(id).textContent="N/A");return;}
-  min.textContent=m[0];
-  max.textContent=m[m.length-1];
-  avg.textContent=(m.reduce((a,b)=>a+b,0)/m.length).toFixed(2);
-  med.textContent=m.length%2?m[Math.floor(m.length/2)]
-    :(m[m.length/2-1]+m[m.length/2])/2;
+function updateHistTooltip(binIndex,marks){
+  if(!histTooltip) return;
+  const BIN=5, COUNT=20;
+  const low=binIndex*BIN;
+  const high=binIndex===COUNT-1?100:(binIndex+1)*BIN-1;
+  const bins=Array(COUNT).fill(0);
+  marks.forEach(m=>bins[Math.min(COUNT-1,Math.floor(m/BIN))]++);
+  const count=bins[binIndex];
+  const pct=marks.length?((count/marks.length)*100).toFixed(1):"0.0";
+  const ranges=document.getElementById("Amin")&&!validateRanges()?readRanges():null;
+  let bandStr="";
+  if(ranges){
+    const matched=GRADES.find(g=>low>=ranges[g][0]&&low<=ranges[g][1]);
+    if(matched) bandStr=` · Grade ${matched}`;
+  }
+  histTooltip.textContent=`Marks ${low}–${high}: ${count} ${count===1?"student":"students"} (${pct}%)${bandStr}`;
+  histTooltip.hidden=false;
 }
 
-function computeGradeSummary(){
-  const students=data.filter(d=>d.Course===course.value);
-  const counts=Object.fromEntries(GRADES.map(g=>[g,0]));
-  let assigned=0;
-  let unassigned=0;
-  const ranges=readRanges();
-  students.forEach(student=>{
-    const matches=GRADES.filter(g=>student["Total Marks"]>=ranges[g][0]&&student["Total Marks"]<=ranges[g][1]);
-    if(matches.length===1){counts[matches[0]]++;assigned++;}
-    else if(matches.length===0) unassigned++;
-  });
-  const largest=Math.max(1,...GRADES.map(g=>counts[g]));
-  const percentages={};
-  GRADES.forEach(g=>{
-    const percentage=students.length?(counts[g]/students.length*100).toFixed(1):"0.0";
-    percentages[g]=percentage;
-    const cell=document.getElementById(g+"count");
-    const fill=document.getElementById(g+"bar");
-    if(cell){
-      const count=document.createElement("b");
-      count.textContent=counts[g];
-      const share=document.createElement("span");
-      share.className="pct";
-      share.textContent=`(${percentage}%)`;
-      cell.replaceChildren(count,document.createTextNode(" "),share);
-      if(previousSummary[g]!==undefined&&previousSummary[g]!==counts[g]){
-        count.classList.add("pulse");
-        setTimeout(()=>count.classList.remove("pulse"),30);
-      }
+function onHistPointerMove(e){
+  if(!data.length||!course.value) return;
+  const marks=data.filter(d=>d.Course===course.value).map(d=>d["Total Marks"]);
+  if(!marks.length) return;
+  const rect=hist.getBoundingClientRect();
+  const x=e.clientX-rect.left;
+  const W=hist.clientWidth||360;
+  const pad={l:2,r:2};
+  const cw=W-pad.l-pad.r;
+  const BIN=5, COUNT=100/BIN;
+  const bw=cw/COUNT;
+  const binIndex=Math.floor((x-pad.l)/bw);
+  if(binIndex>=0&&binIndex<COUNT){
+    if(hoveredBinIndex!==binIndex){
+      hoveredBinIndex=binIndex;
+      updateHistTooltip(binIndex,marks);
+      drawHistogram(false);
     }
-    if(fill) fill.style.width=`${counts[g]/largest*100}%`;
-    previousSummary[g]=counts[g];
-  });
-  gradeSummary.textContent=GRADES.map(g=>`${g}: ${counts[g]} (${percentages[g]}%)`).join(", ");
-  const invalid=validateRanges();
-  if(invalid){
-    gradeReconciliation.className="recon warn";
-    gradeReconciliation.textContent="Fix the grade ranges to check the totals.";
-  }else if(assigned===students.length){
-    gradeReconciliation.className="recon ok";
-    gradeReconciliation.textContent=`All ${students.length} students have one grade. The grade counts add up to ${assigned}.`;
   }else{
-    gradeReconciliation.className="recon warn";
-    gradeReconciliation.textContent=`${unassigned} of ${students.length} students do not have a grade. Check the ranges before exporting.`;
+    onHistPointerLeave();
   }
+}
+
+function onHistPointerLeave(){
+  if(hoveredBinIndex!==null){
+    hoveredBinIndex=null;
+    if(histTooltip) histTooltip.hidden=true;
+    drawHistogram(false);
+  }
+}
+
+// CSV & XLSX exports
+function csvCell(value){
+  let text=String(value??"");
+  if(/^[\s]*[=+@-]/.test(text)) text="'"+text;
+  return `"${text.replaceAll('"','""')}"`;
 }
 
 function exportName(extension){
   return `${course.value.trim().replace(/[^a-z0-9_-]+/gi,"_")}_grades.${extension}`;
 }
 
-download.onclick=()=>{
+function exportCsv(){
   let csv=`Instructor,${csvCell(instructor.value.trim())}\r\nCourse,${csvCell(course.value)}\r\n\r\nBITS ID,Total Marks,Grade\r\n`;
   gradedRows().forEach(row=>{
     csv+=`${csvCell(row["BITS ID"])},${csvCell(row["Total Marks"])},${csvCell(row.Grade)}\r\n`;
@@ -1617,12 +1926,13 @@ download.onclick=()=>{
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
   a.download=exportName("csv");
-  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 
   thankyou.textContent=`Grades for ${course.value} were exported.`;
-};
+}
 
-downloadXlsx.onclick=()=>{
+function exportXlsx(){
   const rows=gradedRows();
   const ranges=readRanges();
   const gradeSheet=XLSX.utils.aoa_to_sheet([
@@ -1650,7 +1960,337 @@ downloadXlsx.onclick=()=>{
   XLSX.writeFile(workbook,exportName("xlsx"));
 
   thankyou.textContent=`Grades for ${course.value} were exported.`;
+}
+
+// Event handlers & initialization
+function courseOptions(){
+  return [...course.options].filter(option=>option.value);
+}
+
+function syncCoursePicker(){
+  const options=courseOptions();
+  courseButton.disabled=!options.length;
+  courseButtonValue.textContent=course.value||(options.length?"Select a course":"Upload a workbook first");
+  courseButtonValue.classList.toggle("placeholder",!course.value);
+  if(!options.length) closeCourseList(false);
+  else if(!courseList.hidden) renderCourseList();
+}
+
+function renderCourseList(){
+  courseList.replaceChildren();
+  courseOptions().forEach((option,i)=>{
+    const item=document.createElement("li");
+    item.id=`courseOption${i}`;
+    item.setAttribute("role","option");
+    item.setAttribute("aria-selected",String(option.value===course.value));
+    const name=document.createElement("span");
+    name.className="picker-name";
+    name.textContent=option.value;
+    const meta=document.createElement("span");
+    meta.className="picker-meta";
+    const count=data.filter(d=>d.Course===option.value).length;
+    meta.textContent=plural(count,"student")+(isDefaultCutoffs(cutoffsForCourse(option.value))?"":" \u00b7 custom ranges");
+    item.append(name,meta);
+    item.onmousemove=()=>{if(activeCourse!==i) setActiveCourse(i);};
+    item.onclick=()=>chooseCourse(i);
+    courseList.appendChild(item);
+  });
+  setActiveCourse(activeCourse);
+}
+
+function setActiveCourse(i){
+  const items=[...courseList.children];
+  if(!items.length) return;
+  activeCourse=Math.max(0,Math.min(items.length-1,i));
+  items.forEach((item,j)=>item.classList.toggle("active",j===activeCourse));
+  courseList.setAttribute("aria-activedescendant",items[activeCourse].id);
+  items[activeCourse].scrollIntoView({block:"nearest"});
+}
+
+function openCourseList(){
+  if(courseButton.disabled||!courseList.hidden) return;
+  activeCourse=Math.max(0,courseOptions().findIndex(option=>option.value===course.value));
+  courseList.hidden=false;
+  courseButton.setAttribute("aria-expanded","true");
+  renderCourseList();
+  courseList.focus();
+}
+
+function closeCourseList(refocus=true){
+  if(courseList.hidden) return;
+  courseList.hidden=true;
+  courseButton.setAttribute("aria-expanded","false");
+  courseList.removeAttribute("aria-activedescendant");
+  if(refocus) courseButton.focus();
+}
+
+function chooseCourse(i){
+  const option=courseOptions()[i];
+  closeCourseList();
+  if(!option||option.value===course.value) return;
+  course.value=option.value;
+  course.dispatchEvent(new Event("change"));
+}
+
+const hasFiles=e=>[...(e.dataTransfer?.types||[])].includes("Files");
+
+if(themeToggle) themeToggle.onclick=toggleTheme;
+if(clearFile) clearFile.onclick=resetWorkbook;
+
+file.onchange=()=>{
+  const selectedFile=file.files[0];
+  file.value="";
+  if(!selectedFile) return;
+  loadWorkbook(selectedFile.name,()=>selectedFile.arrayBuffer(),"The selected file could not be read.",false);
 };
+
+loadSample.onclick=()=>{
+  loadWorkbook("sample-marks.xlsx",async()=>{
+    for(const src of SAMPLE_SOURCES){
+      try{
+        const response=await fetch(src);
+        if(response.ok) return await response.arrayBuffer();
+      }catch{
+        // try the next source
+      }
+    }
+    throw new Error("sample unavailable");
+  },"The sample workbook could not be downloaded. Check your internet connection and try again.",true);
+};
+
+document.addEventListener("dragenter",e=>{
+  if(!hasFiles(e)) return;
+  dragDepth++;
+  document.body.classList.add("dragging");
+});
+document.addEventListener("dragleave",e=>{
+  if(!hasFiles(e)||--dragDepth>0) return;
+  dragDepth=0;
+  document.body.classList.remove("dragging");
+});
+document.addEventListener("dragover",e=>{
+  if(hasFiles(e)) e.preventDefault();
+});
+document.addEventListener("drop",e=>{
+  if(!hasFiles(e)) return;
+  e.preventDefault();
+  dragDepth=0;
+  document.body.classList.remove("dragging");
+  const dropped=e.dataTransfer.files[0];
+  if(!dropped) return;
+  if(!/\.xlsx?$/i.test(dropped.name)){
+    showFileError("Only .xls and .xlsx files can be uploaded.");
+    return;
+  }
+  loadWorkbook(dropped.name,()=>dropped.arrayBuffer(),"The dropped file could not be read.",false);
+});
+
+instructor.oninput=()=>{
+  updateDownloadState();
+  if(course.value){
+    welcome.className="notice";
+    welcome.textContent=instructor.value.trim()
+      ? `Hello, ${instructor.value.trim()}. Review the grade ranges and class summary before exporting.`
+      : "Enter the instructor name to enable grade downloads.";
+  }
+};
+
+course.onchange=()=>{
+  if(!course.value){
+    grades.replaceChildren();
+    resetRanges.disabled=true;
+    undoRanges.disabled=true;
+    undoStack=[];
+    previousCutoffs=null;
+    download.disabled=true;
+    downloadXlsx.disabled=true;
+    clearAnalytics();
+    updateDownloadState();
+    return;
+  }
+  if(!instructor.value.trim()){
+    course.value="";
+    grades.replaceChildren();
+    resetRanges.disabled=true;
+    undoRanges.disabled=true;
+    undoStack=[];
+    previousCutoffs=null;
+    download.disabled=true;
+    downloadXlsx.disabled=true;
+    clearAnalytics();
+    welcome.className="error";
+    welcome.textContent="Enter the instructor name before selecting a course.";
+    updateDownloadState();
+    instructor.focus();
+    return;
+  }
+  welcome.className="notice";
+  welcome.textContent=`Hello, ${instructor.value.trim()}. Review the grade ranges and class summary before exporting.`;
+  buildGradeUI();
+  updateAll();
+};
+
+courseButton.onclick=()=>courseList.hidden?openCourseList():closeCourseList();
+courseButton.onkeydown=e=>{
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){
+    e.preventDefault();
+    openCourseList();
+  }
+};
+courseList.onkeydown=e=>{
+  const count=courseList.children.length;
+  if(e.key==="ArrowDown") setActiveCourse(activeCourse+1);
+  else if(e.key==="ArrowUp") setActiveCourse(activeCourse-1);
+  else if(e.key==="Home") setActiveCourse(0);
+  else if(e.key==="End") setActiveCourse(count-1);
+  else if(e.key==="Enter"||e.key===" ") chooseCourse(activeCourse);
+  else if(e.key==="Escape") closeCourseList();
+  else if(e.key==="Tab"){closeCourseList(false);return;}
+  else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    const names=courseOptions().map(option=>option.value.toLocaleLowerCase());
+    const letter=e.key.toLocaleLowerCase();
+    const next=[...names.keys()].map(k=>(activeCourse+1+k)%count).find(k=>names[k].startsWith(letter));
+    if(next!==undefined) setActiveCourse(next);
+  }
+  else return;
+  e.preventDefault();
+};
+courseList.addEventListener("focusout",e=>{
+  if(!coursePicker.contains(e.relatedTarget)) closeCourseList(false);
+});
+course.addEventListener("change",syncCoursePicker);
+new MutationObserver(syncCoursePicker).observe(course,{childList:true});
+
+resetRanges.onclick=()=>{
+  if(!document.getElementById("Amin")) return;
+  if(!confirm("Reset all grade ranges to the default values?")) return;
+  saveUndoPoint();
+  setCutoffs(DEFAULT_CUTOFFS);
+  updateAll();
+};
+
+undoRanges.onclick=()=>{
+  if(!undoStack.length) return;
+  setCutoffs(undoStack.pop());
+  undoRanges.disabled=!undoStack.length;
+  updateAll();
+};
+
+download.onclick=exportCsv;
+downloadXlsx.onclick=exportXlsx;
+
+previewSearch.oninput=renderPreview;
+nearOnly.onchange=renderPreview;
+sortId.onclick=()=>changePreviewSort("id");
+sortMarks.onclick=()=>changePreviewSort("marks");
+sortGrade.onclick=()=>changePreviewSort("grade");
+
+document.querySelectorAll(".grade-chip").forEach(chip=>{
+  chip.onclick=()=>{
+    if(chip.disabled) return;
+    selectedGradeFilter=chip.dataset.grade;
+    document.querySelectorAll(".grade-chip").forEach(c=>{
+      const isAct=c.dataset.grade===selectedGradeFilter;
+      c.classList.toggle("active",isAct);
+      c.setAttribute("aria-pressed",isAct?"true":"false");
+    });
+    renderPreview();
+  };
+});
+
+hist.addEventListener("pointermove",onHistPointerMove);
+hist.addEventListener("pointerleave",onHistPointerLeave);
+hist.addEventListener("keydown",e=>{
+  if(!data.length||!course.value) return;
+  const marks=data.filter(d=>d.Course===course.value).map(d=>d["Total Marks"]);
+  if(!marks.length) return;
+  const COUNT=20;
+  if(e.key==="ArrowRight"){
+    e.preventDefault();
+    hoveredBinIndex=hoveredBinIndex===null?0:Math.min(COUNT-1,hoveredBinIndex+1);
+    updateHistTooltip(hoveredBinIndex,marks);
+    drawHistogram(false);
+  }else if(e.key==="ArrowLeft"){
+    e.preventDefault();
+    hoveredBinIndex=hoveredBinIndex===null?COUNT-1:Math.max(0,hoveredBinIndex-1);
+    updateHistTooltip(hoveredBinIndex,marks);
+    drawHistogram(false);
+  }else if(e.key==="Escape"){
+    onHistPointerLeave();
+  }
+});
+
+if(simToggle){
+  simToggle.onclick=()=>{
+    if(!course.value||validateRanges()) return;
+    simActive=!simActive;
+    simToggle.classList.toggle("active",simActive);
+    simToggle.textContent=simActive?"Close simulation":"Simulate";
+    simToggle.setAttribute("aria-expanded",simActive?"true":"false");
+    simBody.hidden=!simActive;
+    if(simActive){
+      updateSimulationView();
+    }else{
+      exitSimulation();
+      computeGradeSummary();
+      renderPreview();
+      drawHistogram(false);
+    }
+  };
+}
+
+if(simGradeSelect){
+  simGradeSelect.onchange=()=>{
+    simGrade=simGradeSelect.value;
+    updateSimulationView();
+  };
+}
+
+if(simDeltaMinus){
+  simDeltaMinus.onclick=()=>{
+    if(simDelta>-10) simDelta--;
+    simDeltaValue.textContent=(simDelta>0?"+":"")+simDelta;
+    updateSimulationView();
+  };
+}
+
+if(simDeltaPlus){
+  simDeltaPlus.onclick=()=>{
+    if(simDelta<10) simDelta++;
+    simDeltaValue.textContent=(simDelta>0?"+":"")+simDelta;
+    updateSimulationView();
+  };
+}
+
+if(simApplyBtn){
+  simApplyBtn.onclick=()=>{
+    if(!simActive) return;
+    const simRanges=getSimulatedRanges();
+    const newCut=simRanges[simGrade][0];
+    const input=document.getElementById(simGrade+"min");
+    if(input){
+      saveUndoPoint();
+      input.value=String(newCut);
+      exitSimulation();
+      updateAll();
+    }
+  };
+}
+
+if(simResetBtn){
+  simResetBtn.onclick=()=>{
+    exitSimulation();
+    computeGradeSummary();
+    renderPreview();
+    drawHistogram(false);
+  };
+}
+
+window.addEventListener("resize",redrawChart);
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",redrawChart);
+
+initTheme();
+loadSheetJS().catch(()=>{});
 </script>
 </body>
 </html>

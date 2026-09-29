@@ -492,3 +492,103 @@ test('rejects workbooks with duplicate canonical headers, extra columns, or miss
   await expect(page.locator('#welcome')).toHaveText('The worksheet must contain exactly these columns: BITS ID, Course, Total Marks.');
 });
 
+test('inspects marks distribution histogram bins via hover and keyboard', async ({ page }) => {
+  await openCourse(page);
+  const hist = page.locator('#hist');
+  const tooltip = page.locator('#histTooltip');
+
+  await expect(tooltip).toBeHidden();
+
+  // Hover over the right side of the canvas (e.g. 95-100 mark bin)
+  const box = await hist.boundingBox();
+  expect(box).not.toBeNull();
+  await page.mouse.move(box.x + box.width * 0.97, box.y + box.height * 0.5);
+
+  await expect(tooltip).toBeVisible();
+  await expect(tooltip).toContainText('Marks 95–100');
+  await expect(tooltip).toContainText('2 students');
+  await expect(tooltip).toContainText('Grade A');
+
+  // Mouse leave hides tooltip
+  await page.mouse.move(box.x - 20, box.y - 20);
+  await expect(tooltip).toBeHidden();
+
+  // Keyboard navigation on canvas
+  await hist.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(tooltip).toBeVisible();
+  await expect(tooltip).toContainText('Marks 0–4');
+});
+
+test('filters students by grade-band chips and combines with search and borderline filters', async ({ page }) => {
+  await openCourse(page);
+
+  const chipAll = page.locator('.grade-chip[data-grade="ALL"]');
+  const chipA = page.locator('.grade-chip[data-grade="A"]');
+  const chipB = page.locator('.grade-chip[data-grade="B"]');
+
+  await expect(chipAll).toHaveClass(/active/);
+  await expect(page.locator('#previewCount')).toContainText('40 students in Course A');
+
+  // Click Grade A chip: should show only Grade A students
+  await chipA.click();
+  await expect(chipA).toHaveClass(/active/);
+  await expect(chipAll).not.toHaveClass(/active/);
+
+  const gradeCellsA = page.locator('#previewBody tr td.g');
+  const countA = await gradeCellsA.count();
+  expect(countA).toBeGreaterThan(0);
+  for (let i = 0; i < countA; i++) {
+    await expect(gradeCellsA.nth(i)).toHaveText('A');
+  }
+
+  // Click Grade B chip
+  await chipB.click();
+  await expect(chipB).toHaveClass(/active/);
+  const gradeCellsB = page.locator('#previewBody tr td.g');
+  const countB = await gradeCellsB.count();
+  expect(countB).toBeGreaterThan(0);
+  for (let i = 0; i < countB; i++) {
+    await expect(gradeCellsB.nth(i)).toHaveText('B');
+  }
+
+  // Return to All
+  await chipAll.click();
+  await expect(page.locator('#previewBody tr')).toHaveCount(40);
+});
+
+test('simulates cut-off moderation without modifying uploaded marks or breaking base exports', async ({ page }) => {
+  await openCourse(page);
+
+  const simToggle = page.locator('#simToggle');
+  const simBody = page.locator('#simBody');
+  const simFeedback = page.locator('#simFeedback');
+
+  await expect(simToggle).toBeEnabled();
+  await expect(simBody).toBeHidden();
+
+  // Enable simulation (default target Grade A, delta -1)
+  await simToggle.click();
+  await expect(simBody).toBeVisible();
+  await expect(simFeedback).toContainText('Simulation active: Grade A cut-off set to 79');
+
+  // Verify simulated student badge and note in preview table
+  const simRows = page.locator('#previewBody tr.sim-promoted');
+  const simRowCount = await simRows.count();
+  expect(simRowCount).toBeGreaterThan(0);
+  await expect(simRows.first().locator('.sim-badge')).toHaveText('Simulated');
+  await expect(simRows.first().locator('td.note')).toContainText('Moves A- → A (Simulated)');
+
+  // Verify the grade bands source indicator reflects simulation
+  await expect(page.locator('#bandsSource')).toHaveText('Moderation simulation in preview');
+
+  // Cancel / Exit simulation reverts cleanly
+  await page.locator('#simResetBtn').click();
+  await expect(simBody).toBeHidden();
+  await expect(page.locator('.sim-badge')).toHaveCount(0);
+  await expect(page.locator('#bandsSource')).toHaveText('Default ranges');
+
+  // Raw marks and base download remain intact
+  await expect(page.locator('#download')).toBeEnabled();
+});
+

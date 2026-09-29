@@ -47,15 +47,18 @@ After fixing the bugs, I made several improvements to make the grading experienc
 - Connected adjacent grade ranges so adjusting the bottom of one grade automatically updates the top of the next grade, preventing accidental gaps.
 - Added an **Undo** button to easily step back through cut-off changes.
 - Custom grade ranges for each course are automatically saved in `localStorage` so they stay when switching courses or refreshing the page.
+- Added a **Moderation Simulator** that lets instructors test cut-off adjustments on any grade band and immediately preview the impact on distribution and promoted students with distinct `(Simulated)` tags, without altering uploaded marks or base exports. Instructors can apply simulated cut-offs or exit back to official ranges.
 
 ### 2. Live Student Table & Borderline Review
 - Added a student roster table that shows each student's BITS ID, marks, assigned grade, and notes in real time as cut-offs move.
 - Flags borderline students who are within 1 or 2 marks of the next higher grade (e.g., "1 mark below A") to help with moderation decisions.
+- Added compact **Grade-Band Filter Chips** (`All`, `A`, `A-`, `B`, `B-`, `C`, `C-`, `D`, `E`) that integrate with search and borderline filtering to let instructors quickly isolate students in specific grades.
 - Added a search box to find students by BITS ID and a checkbox to filter for only borderline students.
 - Supported sorting the table by clicking any column header (BITS ID, marks, or grade).
 
 ### 3. Clearer Analytics & Visuals
 - Replaced the fragile bell curve with a clean histogram showing marks grouped in 5-mark buckets, along with cut-off lines and student counts.
+- Added **Interactive Histogram Inspection**: instructors can hover over bins or navigate with arrow keys to view the exact mark range, student count, percentage of class, and corresponding grade band in a tooltip.
 - Displays Minimum, Maximum, Average (mean), and Median marks for the selected course.
 - Added a reconciliation check that confirms all enrolled students have exactly one grade assigned.
 - Formatted grade counts clearly as `Count (Percentage%)`.
